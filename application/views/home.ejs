@@ -1,6 +1,62 @@
-<%- include(`partials/_head`); %>
-<%- include(`partials/_header`); %>
+<%- include('partials/_head'); %>
+<%- include('partials/_header'); %>
 
-<h1>Netflix wrapped home page</h1>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint incidunt in quia? Doloremque voluptate corrupti in fugiat harum natus quasi quas quidem odio eveniet, provident dolore dolores rerum sunt nulla atque nobis excepturi fugit inventore vero. Beatae saepe ullam veniam, voluptatem nesciunt facilis neque iusto amet quaerat quo. Maxime fugiat est voluptate aut quam quae aperiam perferendis illum rerum? Similique error pariatur commodi facilis excepturi corporis voluptatum aspernatur consequuntur beatae ipsum quam explicabo vel, fuga illo cumque dicta quis suscipit, dolore quasi. Beatae, nostrum corrupti ea numquam saepe sed, perferendis nobis consequatur nesciunt maiores ipsam iure, natus dolore dolor nemo!</p>
-<%- include(`partials/_footer`); %>
+<style>
+  body {
+    background-color: black;
+    color: white;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  h1 {
+    color: red;
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  input[type="file"] {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+  }
+
+  input[type="submit"] {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #cc0000;
+  }
+</style>
+
+<h1>Netflix Wrapped</h1>
+
+<form action="/upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="netflixData" required />
+  <input type="submit" value="Upload Data" />
+</form>
+
+<%- include('partials/_footer'); %>

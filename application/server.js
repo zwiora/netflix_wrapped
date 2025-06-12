@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const app = express();
-
+const port = 3000;
 function logger(req, res, next) {
     console.log("Log: " + req.originalUrl);
     next();
@@ -23,4 +23,6 @@ const homeRouter = require('./routes/home.routes');
 
 app.use('/', homeRouter);
 
-app.listen(80)
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
