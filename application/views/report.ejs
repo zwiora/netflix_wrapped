@@ -1,0 +1,28 @@
+<%- include('partials/_head'); %>
+<%- include('partials/_header'); %>
+
+<style>
+  body {
+    background-color: black;
+    color: white;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+  }
+
+  h1 {
+    color: red;
+    margin-bottom: 1rem;
+  }
+
+  .report-section {
+    margin-top: 2rem;
+  }
+</style>
+
+<h1>Your Netflix Wrapped Report</h1>
+
+<div class="report-section">
+  <pre><%= JSON.stringify(report, null, 2) %></pre>
+</div>
+
+<%- include('partials/_footer'); %>

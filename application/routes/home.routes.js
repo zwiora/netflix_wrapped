@@ -1,7 +1,21 @@
 const express = require('express');
 const session = require('express-session');
 // const data = require('../data/mydata');
+const axios = require('axios');
 const router = express.Router();
+const fs = require('fs');
+const { IncomingForm } = require('formidable');
+const path = require('path');
+const uploadDir = path.join(__dirname, '../../uploads');
+const FormData = require('form-data');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const form = new IncomingForm({
+  uploadDir,
+  keepExtensions: true,
+});
 
 router.get('/', function(req, res, next) {
     // allCategories = [];
@@ -28,6 +42,62 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.post('/upload', (req, res) => {
+  // Just save file temporarily, then redirect to waiting screen
+  const form = new IncomingForm({
+    uploadDir: path.join(__dirname, '../../uploads'),
+    keepExtensions: true,
+  });
+
+  form.parse(req, async (err, fields, files) => {
+    if (err || !files.netflixData) {
+      return res.status(400).send('No file uploaded.');
+    }
+
+    const file = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
+
+    // Save filename in app memory (or session, if preferred)
+    req.app.locals.pendingUpload = file;
+    res.redirect('/waiting');
+  });
+});
+router.post('/process', async (req, res) => {
+  const file = req.app.locals.pendingUpload;
+
+  if (!file) {
+    return res.status(400).send('No pending file');
+  }
+
+  const fileStream = fs.createReadStream(file.filepath);
+  const formData = new FormData();
+  formData.append('file', fileStream, file.originalFilename);
+
+  try {
+    const apiResponse = await axios.post('http://localhost:5000/analyze', formData, {
+      headers: formData.getHeaders(),
+      timeout: 4000, // Optional: shorten request timeout
+    });
+
+    req.app.locals.reportData = apiResponse.data;
+    return res.status(200).send('OK');
+  } catch (err) {
+    console.error('API call failed:', err.message);
+    return res.status(500).send('API failed');
+  }
+});
+router.get('/waiting', (req, res) => {
+  res.render('waiting');
+});
+
+router.get('/report', (req, res) => {
+  const report = req.app.locals.reportData;
+
+  if (!report) {
+    return res.status(404).send('No report available. Please upload a file first.');
+  }
+
+  res.render('report', { report });
+});
 // router.get('/getCategories', (req, res) => {
 //     res.redirect('/');
 // })
