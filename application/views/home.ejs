@@ -116,6 +116,27 @@
     flex-shrink: 0;
   }
 
+    .upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .file-display {
+    display: none;
+    font-size: 0.85rem;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .file-display img {
+    width: 16px;
+    height: 16px;
+  }
+
   footer {
     margin-top: 4rem;
     padding: 2rem;
@@ -153,13 +174,18 @@
       <p>Click to choose your viewing activity CSV file.</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
-        <button type="button" id="uploadBtn">
-          <img src="/Assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
-        </button>
+        <div class="upload-row">
+          <button type="button" id="uploadBtn">
+            <img src="/assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
+          </button>
+          <span id="fileDisplay" class="file-display" style="display: none;"></span>
+          </span>
+        </div>
       </form>
     </div>
     <div class="step-img"></div>
   </div>
+
 
   <!-- Step 3 -->
   <div class="step-card">
@@ -190,19 +216,70 @@
 </footer>
 
 <script>
-  // Trigger file dialog on button click
-  document.getElementById('uploadBtn').addEventListener('click', () => {
-    document.getElementById('fileInput').click();
+  let tempFile = null;
+
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const fileDisplay = document.getElementById('fileDisplay');
+
+  uploadBtn.addEventListener('click', () => {
+    fileInput.click();
   });
 
-  // Submit form once file is selected
-  document.getElementById('fileInput').addEventListener('change', () => {
-    document.getElementById('uploadForm').submit();
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+
+    if (!file || file.type !== 'text/csv') {
+      alert('Please upload a valid CSV file.');
+      fileInput.value = ''; // clear input
+      tempFile = null;
+      fileDisplay.style.display = 'none';
+      return;
+    }
+
+    tempFile = file;
+
+    fileDisplay.innerHTML = `
+      <img src="/assets/icons/generate.svg" width="16" alt="CSV Icon" />
+      <span>${file.name}</span>
+    `;
+    fileDisplay.style.display = 'flex';
   });
 
-  // Placeholder for report generation
-  function generateReport() {
-    alert("Report generation not implemented yet.");
+  async function generateReport() {
+    if (!tempFile) {
+      alert('Please upload a CSV file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('netflixData', tempFile);
+
+    try {
+      const res = await fetch('/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = '/waiting';
+      } else {
+        throw new Error(data.error || 'Upload failed.');
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      alert('Upload failed. Please try again.');
+
+      // Optional: tell the backend to clean up the partial upload
+      await fetch('/cleanup', { method: 'POST' });
+
+      // Reset file + UI
+      tempFile = null;
+      fileInput.value = '';
+      fileDisplay.style.display = 'none';
+    }
   }
 </script>
 
