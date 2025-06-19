@@ -50,7 +50,6 @@
     margin: 0;
   }
 
-
   .main-container {
     max-width: 800px;
     margin: 2rem auto;
@@ -74,6 +73,13 @@
     flex: 1;
     margin-right: 1rem;
   }
+
+  .step-content input[disabled],
+  .step-content button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
 
   .step-content h2 {
     font-size: 1rem;
@@ -192,8 +198,8 @@
     <div class="step-content">
       <h2>3. Choose timespan</h2>
       <p>Select a date range for your wrapped summary.</p>
-      <input type="date" name="startDate" />
-      <input type="date" name="endDate" />
+      <input type="date" name="startDate" id="startDate" disabled />
+      <input type="date" name="endDate" id="endDate" disabled />
     </div>
     <div class="step-img"></div>
   </div>
@@ -203,13 +209,12 @@
     <div class="step-content">
       <h2>4. Generate report</h2>
       <p>Click the button to generate your Netflix Wrapped!</p>
-      <button onclick="generateReport()">
+      <button id="generateBtn" onclick="generateReport()" disabled>
         <img src="/Assets/icons/generate.svg" width="16" alt="Generate" /> Generate Report
       </button>
     </div>
     <div class="step-img"></div>
   </div>
-</div>
 
 <footer>
   Made by WUST students for SSD project. Not affiliated with Netflix.
@@ -227,6 +232,24 @@
   });
 
   fileInput.addEventListener('change', () => {
+    document.getElementById('startDate').disabled = false;
+    document.getElementById('endDate').disabled = false;
+    document.getElementById('generateBtn').disabled = false;
+
+    // Set default range: last year
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    startDateInput.value = oneYearAgo.toISOString().split('T')[0];
+    endDateInput.value = today.toISOString().split('T')[0];
+
+    // Update min/max bounds
+    startDateInput.min = minDateStr;
+    startDateInput.max = todayStr;
+    endDateInput.min = startDateInput.value;
+    endDateInput.max = todayStr;
+
     const file = fileInput.files[0];
 
     if (!file || file.type !== 'text/csv') {
@@ -269,6 +292,10 @@
         throw new Error(data.error || 'Upload failed.');
       }
     } catch (err) {
+      document.getElementById('startDate').disabled = true;
+      document.getElementById('endDate').disabled = true;
+      document.getElementById('generateBtn').disabled = true;
+
       console.error('Upload error:', err);
       alert('Upload failed. Please try again.');
 
@@ -282,5 +309,54 @@
     }
   }
 </script>
+
+<script>
+  const startDateInput = document.getElementById('startDate');
+  const endDateInput = document.getElementById('endDate');
+
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+
+  const minDate = new Date();
+  minDate.setFullYear(minDate.getFullYear() - 5);
+  const minDateStr = minDate.toISOString().split('T')[0];
+
+  // Set default min/max attributes
+  startDateInput.min = minDateStr;
+  startDateInput.max = todayStr;
+  endDateInput.min = minDateStr;
+  endDateInput.max = todayStr;
+
+  // Validate when either input changes
+  startDateInput.addEventListener('change', () => {
+    if (startDateInput.value > todayStr) {
+      alert("Start date cannot be in the future.");
+      startDateInput.value = '';
+      return;
+    }
+
+    if (endDateInput.value && endDateInput.value < startDateInput.value) {
+      alert("End date cannot be earlier than start date.");
+      endDateInput.value = '';
+    }
+
+    // Ensure endDate can't be before startDate
+    endDateInput.min = startDateInput.value;
+  });
+
+  endDateInput.addEventListener('change', () => {
+    if (endDateInput.value > todayStr) {
+      alert("End date cannot be in the future.");
+      endDateInput.value = '';
+      return;
+    }
+
+    if (startDateInput.value && endDateInput.value < startDateInput.value) {
+      alert("End date cannot be earlier than start date.");
+      endDateInput.value = '';
+    }
+  });
+</script>
+
 
 <%- include('partials/_footer'); %>
