@@ -6,3 +6,8 @@
 * While running for the first time: run ```go mod tidy```
 * Run ```go build .```
 * Run ```./netflix_wrapped_api```
+
+## Testing
+
+* curl http://localhost:8080/test
+* curl http://localhost:8080/test --include --header "Content-Type: application/json" -X "POST" -d "@test_data/test.txt"
