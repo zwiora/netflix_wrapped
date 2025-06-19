@@ -24,7 +24,6 @@ func initializeTMDB() (*tmdb.Client, error) {
 
 func callTMDB(tmdbClient *tmdb.Client, title string) error {
 
-	var counter int8
 	var id int64
 	// Check if the title contains a colon, indicating it might be a TV show
 	if strings.Contains(title, ":") {
@@ -40,8 +39,7 @@ func callTMDB(tmdbClient *tmdb.Client, title string) error {
 		for _, result := range searchResult.Results {
 			if result.Name == seriesTitle {
 				id = result.ID
-				counter++
-				fmt.Println("Found TV Show:", result)
+				break
 			}
 		}
 	} else
@@ -55,25 +53,25 @@ func callTMDB(tmdbClient *tmdb.Client, title string) error {
 		for _, result := range searchResult.Results {
 			if result.Title == title {
 				id = result.ID
-				counter++
+				break
 			}
 		}
 	}
 
-	if counter == 1 {
-		log.Println(id)
+	options := map[string]string{
+		"append_to_response": "images,credits",
+	}
+	productionDetails, err := tmdbClient.GetTVDetails(int(id), options) // ID BoJack Horseman
+	if err != nil {
+		return err
 	}
 
-	// 	options := map[string]string{
-	// 	"append_to_response": "images,credits",
-	// }
-	// tvDetails, err := tmdbClient.GetTVDetails(61222, nil) // ID BoJack Horseman
-	// if err != nil {
-	// 	log.Fatalf("Błąd: %v", err)
-	// }
+	// fmt.Println(productionDetails.TVImagesAppend.Images.Posters[0].FilePath)
+	fmt.Println(productionDetails)
 
 	// fmt.Println("Tytuł:", tvDetails.Name)
 	// fmt.Println("Gatunki:")
+
 	// for _, genre := range tvDetails.Genres {
 	// 	fmt.Println("-", genre.Name)
 	// }
