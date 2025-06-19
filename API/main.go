@@ -28,6 +28,32 @@ type Data struct {
 	Profiles []Profile `json:"profiles"`
 }
 
+type ProductionType string
+
+const (
+	Movie ProductionType = "Movie"
+	TV    ProductionType = "TV series"
+)
+
+type Production struct {
+	Title       string         `json:"title"`
+	Type        ProductionType `json:"type"`
+	Genre       string         `json:"genre"`
+	Rating      float64        `json:"rating"`
+	Duration    int            `json:"duration"`
+	WatchedTime int            `json:"watchedTime"`
+}
+
+type Report struct {
+	TopGenres      []string     `json:"topGenres"`
+	TopActors      []string     `json:"topActors"`
+	TotalWatchTime int          `json:"totalWatchTime"`
+	BingeData      []int        `json:"bingeData"`
+	GenresData     []string     `json:"genresData"`
+	TrendsData     []string     `json:"trendsData"`
+	Watched        []Production `json:"watched"`
+}
+
 var uploadedData = []Data{}
 
 func getAllData(c *gin.Context) {
@@ -36,6 +62,40 @@ func getAllData(c *gin.Context) {
 
 func postData(c *gin.Context) {
 	var newEntity Data
+	example := Report{
+		TopGenres:      []string{"Drama", "Comedy", "Sci-Fi"},
+		TopActors:      []string{"Bryan Cranston", "Emma Stone"},
+		TotalWatchTime: 920,
+		BingeData:      []int{3, 5, 2, 4},
+		GenresData:     []string{"Drama", "Thriller", "Comedy"},
+		TrendsData:     []string{"Popular", "Trending", "Critically Acclaimed"},
+		Watched: []Production{
+			{
+				Title:       "Breaking Bad",
+				Type:        TV,
+				Genre:       "Drama",
+				Rating:      9.5,
+				Duration:    47,
+				WatchedTime: 47,
+			},
+			{
+				Title:       "La La Land",
+				Type:        Movie,
+				Genre:       "Musical",
+				Rating:      8.0,
+				Duration:    128,
+				WatchedTime: 128,
+			},
+			{
+				Title:       "Stranger Things",
+				Type:        TV,
+				Genre:       "Sci-Fi",
+				Rating:      8.7,
+				Duration:    50,
+				WatchedTime: 50,
+			},
+		},
+	}
 
 	if err := c.BindJSON(&newEntity); err != nil {
 		log.Println(err)
@@ -43,10 +103,11 @@ func postData(c *gin.Context) {
 	}
 
 	uploadedData = append(uploadedData, newEntity)
-	c.IndentedJSON(http.StatusCreated, newEntity)
+	c.IndentedJSON(http.StatusOK, example)
 }
 
 func main() {
+
 	fmt.Println("Starting application")
 	port := "8080"
 
