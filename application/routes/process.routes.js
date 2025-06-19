@@ -10,6 +10,7 @@ const axios = require('axios');
 router.post('/', async (req, res) => {
   if (!req.session.reportId) {
     res.redirect('/');
+    return;
   }
   // Convert file to JSON
   let activity = {
@@ -66,10 +67,17 @@ router.post('/', async (req, res) => {
       if (response.status != 200) 
         return res.status(500).send('API failed');
       else {
-        console.log(JSON.stringify(response.data));
+        req.session.report = response.data;
+        fs.writeFile(
+          path.join(__dirname, '../../reports', req.session.reportId), 
+          JSON.stringify(response.data), 
+          (err) => {
+            if (err)
+              return res.status(500).send('Server failed');
+          }
+        );
         return res.status(200).send('OK');
       }
-      
     })
     .catch(function (error) {
       console.log(error);

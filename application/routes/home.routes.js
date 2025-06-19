@@ -33,13 +33,14 @@ router.post('/upload', (req, res) => {
 });
 
 router.get('/report', (req, res) => {
-  const report = req.app.locals.reportData;
-
-  if (!report) {
-    return res.status(404).send('No report available. Please upload a file first.');
+  if (!req.session.reportId) {
+    res.redirect('/');
+    return;
   }
-
-  res.render('report', { report });
+  res.render('report', {
+    title: "Netflix Wrapped - report",
+    report: req.session.report
+  });
 });
 
 module.exports = router;

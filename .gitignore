@@ -1,4 +1,6 @@
 /application/node_modules
 /uploads
+/reports
 API/netflix_wrapped_api
 API/apiKey.go
+*.exe
