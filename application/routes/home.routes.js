@@ -1,92 +1,95 @@
 const express = require('express');
-const session = require('express-session');
-// const data = require('../data/mydata');
-const axios = require('axios');
+const _ = require('express-session');
 const router = express.Router();
-const fs = require('fs');
-const { IncomingForm } = require('formidable');
+const formidable = require('formidable');
 const path = require('path');
-const uploadDir = path.join(__dirname, '../../uploads');
-const FormData = require('form-data');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+const fs = require('fs');
+const readline = require('readline');
 
-const form = new IncomingForm({
-  uploadDir,
-  keepExtensions: true,
+
+router.get('/', function(_, res, next) {
+  res.render('home', {
+    title: 'Netflix Wrapped'
+  });
 });
 
-router.get('/', function(req, res, next) {
-    // allCategories = [];
-    // for (let index = 0; index < data.categories.length; index++) {
-    //     const element = data.categories[index];
-    //     allCategories.push({
-    //         "name": element.name,
-    //         "id": index
-    //     });        
-    // }
-
-    // let cartContentCounter = 0;
-    // if (req.session.cart != undefined) {
-    //     req.session.cart.forEach(cartElement => {
-    //         cartContentCounter += cartElement.count;
-    //     });
-    // }
-
-    res.render('home', {
-        title: 'Netflix Wrapped',
-        // currentCategoryName: 'Welcome!',
-        // cartCounter: cartContentCounter,
-        // categoriesList: allCategories
-    });
+router.get('/waiting', (_, res) => {
+  res.render('waiting', {
+    title: 'Processing data...'
+  });
 });
 
 router.post('/upload', (req, res) => {
-  // Just save file temporarily, then redirect to waiting screen
-  const form = new IncomingForm({
+  let form = new formidable.IncomingForm({
     uploadDir: path.join(__dirname, '../../uploads'),
-    keepExtensions: true,
+    keepExtensions: true
   });
-
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req, function (err, fields, files) {
     if (err || !files.netflixData) {
       return res.status(400).send('No file uploaded.');
     }
-
-    const file = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
-
-    // Save filename in app memory (or session, if preferred)
-    req.app.locals.pendingUpload = file;
+    const uploadedFile = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
+    req.session.reportId = uploadedFile.newFilename;
     res.redirect('/waiting');
-  });
+  })
 });
+
 router.post('/process', async (req, res) => {
-  const file = req.app.locals.pendingUpload;
-
-  if (!file) {
-    return res.status(400).send('No pending file');
+  if (!req.session.reportId) {
+    res.redirect('/');
   }
-
-  const fileStream = fs.createReadStream(file.filepath);
-  const formData = new FormData();
-  formData.append('file', fileStream, file.originalFilename);
-
-  try {
-    const apiResponse = await axios.post('http://localhost:5000/analyze', formData, {
-      headers: formData.getHeaders(),
-      timeout: 4000, // Optional: shorten request timeout
-    });
-
-    req.app.locals.reportData = apiResponse.data;
-    return res.status(200).send('OK');
-  } catch (err) {
-    console.error('API call failed:', err.message);
-    return res.status(500).send('API failed');
+  // Convert file to JSON
+  let activity = {
+    profiles: []
+  };
+  const fileStream = fs.createReadStream(path.join(__dirname, '../../uploads', req.session.reportId));
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+  firstLine = true;
+  for await (const line of rl) {
+    if (firstLine) {
+      firstLine = false;
+      continue;
+    }
+    // Split line using ',' (except when in quotes)
+    let l = line.replaceAll(",,", ', ,');
+    l = Array.from(l.matchAll(/[^",]+|"([^"]*)"/g), ([a,b]) => b || a);
+    // Check if profile already exists on activity list, set profile variable to its ID
+    let profile = l[0];
+    let profileExists = false;
+    for (let index = 0; index < activity.profiles.length; index++) {
+      const element = activity.profiles[index];
+      if (element.name == profile) {
+        profileExists = true;
+        profile = index;
+        break;
+      }
+    }
+    if (!profileExists) {
+      activity.profiles.push({
+        name: profile,
+        viewingActivity: []
+      });
+      profile = activity.profiles.length - 1;
+    }
+    // Add current line to the viewingActivity
+    activity.profiles[profile].viewingActivity.push({
+      startTime: l[1],
+      duration: l[2],
+      attributes: l[3],
+      title: l[4],
+      deviceType: l[6],
+      bookmark: l[7],
+      latestBookmark: l[8],
+      country: l[9]
+    })
   }
-});
-router.get('/waiting', (req, res) => {
-  res.render('waiting');
+  // Send request to API
+  
+  // return res.status(200).send('OK');
+  return res.status(500).send('API failed');
 });
 
 router.get('/report', (req, res) => {

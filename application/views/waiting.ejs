@@ -32,7 +32,7 @@
 <script>
   const statusEl = document.getElementById("status");
 
-  async function sendToApi() {
+  async function waitForResults() {
     try {
       const response = await fetch('/process', {
         method: 'POST'
@@ -52,14 +52,7 @@
     statusEl.textContent = "Still waiting... this might take longer than usual.";
   }, 3000);
 
-  sendToApi();
-
-  // Optional hard timeout
-  setTimeout(() => {
-    if (statusEl.textContent.startsWith("Waiting")) {
-      statusEl.textContent = "API is not responding. Please try again later.";
-    }
-  }, 5000);
+  waitForResults();
 </script>
 
 <%- include('partials/_footer'); %>
