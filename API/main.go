@@ -2,34 +2,47 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type entity struct {
-	ID      string `json:"id"`
-	Content string `json:"content"`
+type ViewingActivity struct {
+	StartTime      string `json:"startTime"`
+	Duration       string `json:"duration"`
+	Attributes     string `json:"attributes"`
+	Title          string `json:"title"`
+	DeviceType     string `json:"deviceType"`
+	Bookmark       string `json:"bookmark"`
+	LatestBookmark string `json:"latestBookmark"`
+	Country        string `json:"country"`
 }
 
-var entities = []entity{
-	{ID: "1", Content: "Test1"},
-	{ID: "2", Content: "Test2"},
-	{ID: "3", Content: "Test3"},
+type Profile struct {
+	Name            string            `json:"name"`
+	ViewingActivity []ViewingActivity `json:"viewingActivity"`
 }
 
-func getEntities(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, entities)
+type Data struct {
+	Profiles []Profile `json:"profiles"`
 }
 
-func postEntity(c *gin.Context) {
-	var newEntity entity
+var uploadedData = []Data{}
+
+func getAllData(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, uploadedData)
+}
+
+func postData(c *gin.Context) {
+	var newEntity Data
 
 	if err := c.BindJSON(&newEntity); err != nil {
+		log.Println(err)
 		return
 	}
 
-	entities = append(entities, newEntity)
+	uploadedData = append(uploadedData, newEntity)
 	c.IndentedJSON(http.StatusCreated, newEntity)
 }
 
@@ -38,8 +51,8 @@ func main() {
 	port := "8080"
 
 	router := gin.Default()
-	router.GET("/test", getEntities)
-	router.POST("/test", postEntity)
+	router.GET("/test", getAllData)
+	router.POST("/generate", postData)
 	router.Run("localhost:" + port)
 
 	fmt.Println("Server running on port " + port)

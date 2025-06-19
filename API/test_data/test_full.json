@@ -1,0 +1,74 @@
+{
+    "profiles": [
+        {
+            "name": "Anna",
+            "viewingActivity": [
+                {
+                    "startTime": "2025-03-09 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 3)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                },
+                {
+                    "startTime": "2025-03-08 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 2)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                },
+                {
+                    "startTime": "2025-03-07 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 1)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                }
+            ]
+        },
+        {
+            "name": "Łukasz",
+            "viewingActivity": [
+                {
+                    "startTime": "2025-03-09 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 3)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                },
+                {
+                    "startTime": "2025-03-08 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 2)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                },
+                {
+                    "startTime": "2025-03-07 22:04:20",
+                    "duration": "00:24:10",
+                    "attributes": "",
+                    "title": "BoJack Horseman: Sezon 4: Tytuł odcinka (Odcinek 1)",
+                    "deviceType": "DefaultWidevineAndroidTablets",
+                    "bookmark": "00:04:56",
+                    "latestBookmark": "00:04:56",
+                    "country": "PL (Poland)"
+                }
+            ]
+        }
+    ]
+}
