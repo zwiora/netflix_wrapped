@@ -31,6 +31,7 @@
 
 <script>
   const statusEl = document.getElementById("status");
+  let gotResponse = false;
 
   async function waitForResults() {
     try {
@@ -40,16 +41,21 @@
 
       if (response.ok) {
         window.location.href = '/report';
+        gotResponse = true;
       } else {
         statusEl.textContent = "Something went wrong with the API.";
+        gotResponse = true;
       }
     } catch (e) {
       statusEl.textContent = "API failed or timed out.";
+      gotResponse = true;
     }
   }
 
   setTimeout(() => {
-    statusEl.textContent = "Still waiting... this might take longer than usual.";
+    if (!gotResponse) {
+      statusEl.textContent = "Still waiting... this might take longer than usual.";
+    }
   }, 3000);
 
   waitForResults();
