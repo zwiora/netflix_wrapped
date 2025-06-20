@@ -36,7 +36,21 @@ func parseMonth(dateStr string) (string, error) {
 	return strconv.Itoa(t.Year()) + "." + strconv.Itoa(int(t.Month())), nil
 }
 
-func prepareList(list map[string]*Production, genres map[int64]string) ([]Production, error) {
+func generateProdDetails(production *Production) *ProductionDetailed {
+	result := new(ProductionDetailed)
+
+	result.Genre = production.Genre
+	result.Title = production.Title
+	result.Rating = production.Rating
+	result.WatchedTime = production.WatchedTime
+	result.Type = production.Type
+	result.id = production.id
+	getProductionDetailsTMDB(result)
+
+	return result
+}
+
+func generateList(list map[string]*Production, genres map[int64]string) ([]Production, error) {
 	var result []Production
 
 	for _, v := range list {
@@ -47,7 +61,7 @@ func prepareList(list map[string]*Production, genres map[int64]string) ([]Produc
 
 		v.id = int(id)
 		v.Rating = rating
-		v.WatchedTime = math.Round(v.WatchedTime)
+		v.WatchedTime = float32(math.Round(float64(v.WatchedTime)))
 
 		for _, r := range genresIDs {
 			v.Genre = append(v.Genre, genres[r])
@@ -116,7 +130,7 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 				}
 				production.Type = Movie
 			}
-			production.WatchedTime += dur.Minutes()
+			production.WatchedTime += float32(dur.Minutes())
 		}
 	}
 
@@ -141,9 +155,9 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 
 	// productions
 	log.Println("Generating list of movies")
-	report.WatchedMovies, err = prepareList(watchedMovies, genres)
+	report.WatchedMovies, err = generateList(watchedMovies, genres)
 	log.Println("Generating list of TV series")
-	report.WatchedTV, err = prepareList(watchedTV, genres)
+	report.WatchedTV, err = generateList(watchedTV, genres)
 
 	if err != nil {
 		return err
@@ -152,8 +166,16 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	// Second traversal
 	var counter int
 	var sum float32
-	timeByGenre := make(map[string]float64)
+	timeByGenre := make(map[string]float32)
 	productionsByGenre := make(map[string]int)
+	var bestMovie Production
+	var bestTV Production
+	var worstMovie Production
+	var worstTV Production
+	bestMovie.Rating = 0
+	bestTV.Rating = 0
+	worstMovie.Rating = 11
+	worstTV.Rating = 11
 
 	for _, v := range report.WatchedMovies {
 		//average rating
@@ -164,6 +186,14 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 		for _, g := range v.Genre {
 			timeByGenre[g] += v.WatchedTime
 			productionsByGenre[g]++
+		}
+
+		//ranking
+		if bestMovie.Rating < v.Rating {
+			bestMovie = v
+		}
+		if worstMovie.Rating > v.Rating {
+			worstMovie = v
 		}
 	}
 	for _, v := range report.WatchedTV {
@@ -176,6 +206,14 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 			timeByGenre[g] += v.WatchedTime
 			productionsByGenre[g]++
 		}
+
+		//ranking
+		if bestTV.Rating < v.Rating {
+			bestTV = v
+		}
+		if worstTV.Rating > v.Rating {
+			worstTV = v
+		}
 	}
 
 	// verage rating
@@ -186,7 +224,7 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	for k, v := range timeByGenre {
 		g := new(Genre)
 		g.Name = k
-		g.TimeSpent = int(math.Round(v))
+		g.TimeSpent = int(math.Round(float64(v)))
 		g.NumberOfProductions = productionsByGenre[k]
 
 		genresArr = append(genresArr, *g)
@@ -195,6 +233,12 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 		return genresArr[i].TimeSpent > genresArr[j].TimeSpent
 	})
 	report.Genres = genresArr
+
+	// ranking
+	report.BestMovie = *generateProdDetails(&bestMovie)
+	report.BestTV = *generateProdDetails(&bestTV)
+	report.WorstMovie = *generateProdDetails(&worstMovie)
+	report.WorstTV = *generateProdDetails(&worstTV)
 
 	return nil
 }

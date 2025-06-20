@@ -80,23 +80,41 @@ func getProductionTMDB(title string, prodType ProductionType) (int64, float32, [
 	}
 
 	return id, rating, genres, nil
-	// options := map[string]string{
-	// 	"append_to_response": "images,credits",
-	// }
-	// productionDetails, err := tmdbClient.GetTVDetails(int(id), options) // ID BoJack Horseman
-	// if err != nil {
-	// 	return err
-	// }
 
-	// // fmt.Println(productionDetails.TVImagesAppend.Images.Posters[0].FilePath)
-	// fmt.Println(productionDetails)
+}
 
-	// fmt.Println("Tytuł:", tvDetails.Name)
-	// fmt.Println("Gatunki:")
+func getProductionDetailsTMDB(prod *ProductionDetailed) error {
+	options := map[string]string{
+		"append_to_response": "images",
+	}
+	if prod.Type == TV {
+		productionDetails, err := tmdbClient.GetTVDetails(prod.id, options) // ID BoJack Horseman
+		if err != nil {
+			return err
+		}
 
-	// for _, genre := range tvDetails.Genres {
-	// 	fmt.Println("-", genre.Name)
-	// }
+		prod.ImageURL = productionDetails.TVImagesAppend.Images.Posters[0].FilePath
+		prod.FirstAirDate = productionDetails.FirstAirDate
+		prod.NumberOfSeasons = productionDetails.NumberOfSeasons
+		prod.NumberOfEpisodes = productionDetails.NumberOfEpisodes
+		prod.OriginCountry = productionDetails.OriginCountry
+		prod.OriginalLanguage = productionDetails.OriginalLanguage
+		prod.OriginalTitle = productionDetails.OriginalName
+		prod.Overview = productionDetails.Overview
+	} else {
+		productionDetails, err := tmdbClient.GetMovieDetails(prod.id, options) // ID BoJack Horseman
+		if err != nil {
+			return err
+		}
 
-	// return nil
+		prod.ImageURL = productionDetails.MovieImagesAppend.Images.Posters[0].FilePath
+		prod.FirstAirDate = productionDetails.ReleaseDate
+		prod.OriginCountry = productionDetails.OriginCountry
+		prod.OriginalLanguage = productionDetails.OriginalLanguage
+		prod.OriginalTitle = productionDetails.OriginalTitle
+		prod.Overview = productionDetails.Overview
+		prod.FullDuration = productionDetails.Runtime
+	}
+
+	return nil
 }

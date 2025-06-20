@@ -12,7 +12,7 @@ type Production struct {
 	Type        ProductionType `json:"type"`
 	Genre       []string       `json:"genre"`
 	Rating      float32        `json:"rating"`
-	WatchedTime float64        `json:"watchedTime"`
+	WatchedTime float32        `json:"watchedTime"`
 	id          int
 }
 
@@ -20,32 +20,18 @@ type ProductionDetailed struct {
 	Title            string         `json:"title"`
 	Type             ProductionType `json:"type"`
 	Genre            []string       `json:"genre"`
-	Rating           float64        `json:"rating"`
-	WatchedTime      int            `json:"watchedTime"`
-	ImageURL         string         `json:"imageUrl"`
-	Overview         string         `json:"overview"`
-	FullDuration     int            `json:"fullRuntime"`
-	FirstAirDate     string         `json:"firstAirDate"`
-	NumberOfSeasons  int            `json:"numberOfSeasons"`
-	NumberOfEpisodes int            `json:"numberOfEpisodes"`
-	Adult            bool           `json:"adult"`
-	OriginCountry    []string       `json:"originCountry"`
-	OriginalLanguage string         `json:"originalLanguage"`
-	OriginalTitle    string         `json:"originalTitle"`
-	Recommended      []Production   `json:"recommended"`
-}
-
-type Actor struct {
-	Name            string       `json:"name"`
-	AlsoKnownAs     []string     `json:"alsoKnownAs"`
-	Gender          string       `json:"gender"`
-	KnownFor        []Production `json:"knownFor"`
-	DateOfBirth     string       `json:"dateOfBirth"`
-	DateOfDeath     string       `json:"dateOfDeath"`
-	PlaceOfBirth    string       `json:"placeOfBirth"`
-	Biography       string       `json:"biography"`
-	ProfileImageURL string       `json:"profileImageUrl"`
-	YourProductions []Production `json:"yourProductions"`
+	Rating           float32        `json:"rating"`
+	WatchedTime      float32        `json:"watchedTime"`
+	id               int
+	ImageURL         string   `json:"imageUrl"`
+	Overview         string   `json:"overview"`
+	FullDuration     int      `json:"fullDuration"`
+	FirstAirDate     string   `json:"firstAirDate"`
+	NumberOfSeasons  int      `json:"numberOfSeasons"`
+	NumberOfEpisodes int      `json:"numberOfEpisodes"`
+	OriginCountry    []string `json:"originCountry"`
+	OriginalLanguage string   `json:"originalLanguage"`
+	OriginalTitle    string   `json:"originalTitle"`
 }
 
 type Genre struct {
@@ -69,17 +55,16 @@ type Month struct {
 }
 
 type Report struct {
-	UserName        string             `json:"userName"`
-	TotalWatchTime  float64            `json:"totalWatchTime"`
-	AverageRating   float32            `json:"averageRating"`
-	BestMovie       ProductionDetailed `json:"bestMovie"`
-	BestTV          ProductionDetailed `json:"bestTV"`
-	WorstMovie      ProductionDetailed `json:"worstMovie"`
-	WorstTV         ProductionDetailed `json:"worstTV"`
-	FavouriteActors []Actor            `json:"favouriteActors"`
-	Genres          []Genre            `json:"genres"`
-	BingeSessions   []BingeSession     `json:"bingeSessions"`
-	Trends          []Month            `json:"trends"`
-	WatchedMovies   []Production       `json:"watchedMovies"`
-	WatchedTV       []Production       `json:"watchedTV"`
+	UserName       string             `json:"userName"`
+	TotalWatchTime float64            `json:"totalWatchTime"`
+	AverageRating  float32            `json:"averageRating"`
+	BestMovie      ProductionDetailed `json:"bestMovie"`
+	BestTV         ProductionDetailed `json:"bestTV"`
+	WorstMovie     ProductionDetailed `json:"worstMovie"`
+	WorstTV        ProductionDetailed `json:"worstTV"`
+	Genres         []Genre            `json:"genres"`
+	BingeSessions  []BingeSession     `json:"bingeSessions"`
+	Trends         []Month            `json:"trends"`
+	WatchedMovies  []Production       `json:"watchedMovies"`
+	WatchedTV      []Production       `json:"watchedTV"`
 }
