@@ -65,33 +65,29 @@ router.post('/', async (req, res) => {
       country: l[9]
     })
   }
+  // Delete uploaded file
+  fs.unlink(uploadedFilePath, (_) => {});
 
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
     .then(function (response) {
-      if (response.status != 200) {
-        fs.unlink(uploadedFilePath, (_) => {});
+      if (response.status != 200)
         return res.status(500).send('API failed');
-      }
       else {
         req.session.report = response.data;
         fs.writeFile(
           path.join(__dirname, '../../reports', req.session.reportId), 
           JSON.stringify(response.data), 
           (err) => {
-            if (err) {
-              fs.unlink(uploadedFilePath, (_) => {});
+            if (err)
               return res.status(500).send('Server failed');
-            }
           }
         );
-        fs.unlink(uploadedFilePath, (_) => {});
         return res.status(200).send('OK');
       }
     })
     .catch(function (error) {
       console.log(error);
-      fs.unlink(uploadedFilePath, (_) => {});
       return res.status(500).send('API failed');
     });
 });
