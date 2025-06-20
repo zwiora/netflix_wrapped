@@ -161,7 +161,7 @@
 
 <div class="main-container">
   <!-- Step 1 -->
-  <div class="step-card">
+  <!-- <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
       <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request)</p>
@@ -171,10 +171,10 @@
       </button>
     </div>
     <div class="step-img"></div>
-  </div>
+  </div> -->
 
   <!-- Step 2 -->
-  <div class="step-card">
+  <!-- <div class="step-card">
     <div class="step-content">
       <h2>2. Upload CSV</h2>
       <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
@@ -190,11 +190,11 @@
       </form>
     </div>
     <div class="step-img"></div>
-  </div>
+  </div> -->
 
 
   <!-- Step 3 -->
-  <div class="step-card">
+  <!-- <div class="step-card">
     <div class="step-content">
       <h2>3. Choose timespan</h2>
       <p>Select a date range for your wrapped summary.</p>
@@ -202,10 +202,10 @@
       <input type="date" name="endDate" id="endDate" disabled />
     </div>
     <div class="step-img"></div>
-  </div>
+  </div> -->
 
   <!-- Step 4 -->
-  <div class="step-card">
+  <!-- <div class="step-card">
     <div class="step-content">
       <h2>4. Generate report</h2>
       <p>Click the button to generate your Netflix Wrapped!</p>
@@ -214,13 +214,17 @@
       </button>
     </div>
     <div class="step-img"></div>
-  </div>
+  </div> -->
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="netflixData" id="netflixData" required>
+    <input type="submit" value="Submit">
+  </form>
 
 <footer>
   Made by WUST students for SSD project. Not affiliated with Netflix.
 </footer>
 
-<script>
+<!-- <script>
   let tempFile = null;
 
   const fileInput = document.getElementById('fileInput');
@@ -359,7 +363,7 @@
       endDateInput.value = '';
     }
   });
-</script>
+</script> -->
 
 
 <%- include('partials/_footer'); %>
