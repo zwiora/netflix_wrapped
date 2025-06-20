@@ -39,8 +39,19 @@ router.get('/report', (req, res) => {
   }
   res.render('report', {
     title: "Netflix Wrapped - report",
-    report: req.session.report
+    report: req.session.report,
+    reportId: req.session.reportId
   });
+});
+
+router.get('/report/:id', (req, res) => {
+  try {
+    req.session.reportId = req.params.id;
+    req.session.report = JSON.parse(fs.readFileSync(path.join(__dirname, '../../reports', req.session.reportId), 'utf8'));
+    res.redirect('/report');
+  } catch (_) {
+    res.redirect('/');
+  }
 });
 
 module.exports = router;
