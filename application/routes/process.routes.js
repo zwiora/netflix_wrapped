@@ -63,26 +63,27 @@ router.post('/', async (req, res) => {
 
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
-    .then(function (response) {
-      if (response.status != 200) 
-        return res.status(500).send('API failed');
-      else {
-        req.session.report = response.data;
-        fs.writeFile(
-          path.join(__dirname, '../../reports', req.session.reportId), 
-          JSON.stringify(response.data), 
-          (err) => {
-            if (err)
-              return res.status(500).send('Server failed');
-          }
-        );
-        return res.status(200).send('OK');
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
+  .then(function (response) {
+    if (response.status != 200) 
       return res.status(500).send('API failed');
-    });
+    else {
+      req.session.report = response.data;
+      fs.writeFile(
+        path.join(__dirname, '../../reports', req.session.reportId), 
+        JSON.stringify(response.data), 
+        (err) => {
+          if (err)
+            return res.status(500).send('Server failed');
+          else
+            return res.status(200).send('OK');
+        }
+      );
+    }
+  })
+  .catch(function (error) {
+    console.log(error);
+    return res.status(500).send('API failed');
+  });
 });
 
 module.exports = router;
