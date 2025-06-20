@@ -12,11 +12,19 @@ router.post('/', async (req, res) => {
     res.redirect('/');
     return;
   }
+  const username = req.session.username;
+  const startDate = Date.parse(req.session.startDate);
+  const endDate = Date.parse(req.session.endDate);
   // Convert file to JSON
   let activity = {
     profiles: []
   };
-  const fileStream = fs.createReadStream(path.join(__dirname, '../../uploads', req.session.reportId));
+  const uploadedFilePath = path.join(__dirname, '../../uploads', req.session.reportId);
+  if (!fs.existsSync(uploadedFilePath)) {
+    res.redirect('/');
+    return;
+  }
+  const fileStream = fs.createReadStream(uploadedFilePath);
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
@@ -32,6 +40,8 @@ router.post('/', async (req, res) => {
     l = Array.from(l.matchAll(/[^",]+|"([^"]*)"/g), ([a,b]) => b || a);
     // Check if profile already exists on activity list, set profile variable to its ID
     let profile = l[0];
+    if (profile != username)
+      continue;
     let profileExists = false;
     for (let index = 0; index < activity.profiles.length; index++) {
       const element = activity.profiles[index];
@@ -49,6 +59,10 @@ router.post('/', async (req, res) => {
       profile = activity.profiles.length - 1;
     }
     // Add current line to the viewingActivity
+    const currentDate = Date.parse(l[1]);
+    if (currentDate < startDate || currentDate > endDate) {
+      continue;
+    }
     activity.profiles[profile].viewingActivity.push({
       startTime: l[1],
       duration: l[2],
@@ -60,11 +74,35 @@ router.post('/', async (req, res) => {
       country: l[9]
     })
   }
+  
+  // Delete uploaded file
+  fs.unlink(uploadedFilePath, (_) => {});
+  // Check if input is valid
+  if (activity.profiles.length == 0)
+    return res.status(500).send('No profiles with this name');
+  if (activity.profiles[0].viewingActivity.length[0])
+    return res.status(500).send('No viewing activity for this profile in this period');
 
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
-  .then(function (response) {
-    if (response.status != 200) 
+    .then(function (response) {
+      if (response.status != 200)
+        return res.status(500).send('API failed');
+      else {
+        req.session.report = response.data;
+        fs.writeFile(
+          path.join(__dirname, '../../reports', req.session.reportId), 
+          JSON.stringify(response.data), 
+          (err) => {
+            if (err)
+              return res.status(500).send('Server failed');
+          }
+        );
+        return res.status(200).send('OK');
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
       return res.status(500).send('API failed');
     else {
       req.session.report = response.data;

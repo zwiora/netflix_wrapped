@@ -4,7 +4,7 @@
 
 * Change the version of the go language in ```go.mod``` file to match yours
 * While running for the first time: run ```go mod tidy```
-* Create file `API/apiKey.go` (must remain in .gitignore!) and save the api key in it:
+* Create file `API/tmdbKey.go` (must remain in .gitignore!) and save the api key in it:
 
 ```
 package main

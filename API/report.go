@@ -11,8 +11,9 @@ type Production struct {
 	Title       string         `json:"title"`
 	Type        ProductionType `json:"type"`
 	Genre       []string       `json:"genre"`
-	Rating      float64        `json:"rating"`
-	WatchedTime int            `json:"watchedTime"`
+	Rating      float32        `json:"rating"`
+	WatchedTime float64        `json:"watchedTime"`
+	id          int
 }
 
 type ProductionDetailed struct {
@@ -77,7 +78,8 @@ type Report struct {
 	WorstTV         ProductionDetailed `json:"worstTV"`
 	FavouriteActors []Actor            `json:"favouriteActors"`
 	FavouriteGenres []Genre            `json:"favouriteGenres"`
-	BingeSessions   []BingeSession
-	Trends          []Month      `json:"trends"`
-	WatchedList     []Production `json:"watchedList"`
+	BingeSessions   []BingeSession     `json:"bingeSessions"`
+	Trends          []Month            `json:"trends"`
+	WatchedMovies   []Production       `json:"watchedMovies"`
+	WatchedTV       []Production       `json:"watchedTV"`
 }
