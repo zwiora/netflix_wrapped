@@ -20,7 +20,31 @@ func initializeTMDB() (*tmdb.Client, error) {
 	return tmdbClient, nil
 }
 
-func callTMDB(title string, prodType ProductionType) (int64, float32, []int64, error) {
+func getGenresTMDB() (map[int64]string, error) {
+	resultM, err := tmdbClient.GetGenreMovieList(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resultTV, err := tmdbClient.GetGenreTVList(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	genres := make(map[int64]string)
+
+	for _, v := range resultM.Genres {
+		genres[v.ID] = v.Name
+	}
+
+	for _, v := range resultTV.Genres {
+		genres[v.ID] = v.Name
+	}
+
+	return genres, nil
+}
+
+func getProductionTMDB(title string, prodType ProductionType) (int64, float32, []int64, error) {
 
 	var id int64
 	var rating float32

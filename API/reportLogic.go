@@ -40,14 +40,18 @@ func prepareList(list map[string]*Production, genres map[int64]string) ([]Produc
 	var result []Production
 
 	for _, v := range list {
-		id, rating, genresIDs, err := callTMDB(v.Title, v.Type)
+		id, rating, genresIDs, err := getProductionTMDB(v.Title, v.Type)
 		if err != nil {
 			return nil, err
 		}
 
 		v.id = int(id)
 		v.Rating = rating
-		v.genresIDs = genresIDs
+		v.WatchedTime = math.Round(v.WatchedTime)
+
+		for _, r := range genresIDs {
+			v.Genre = append(v.Genre, genres[r])
+		}
 
 		result = append(result, *v)
 	}
@@ -56,9 +60,7 @@ func prepareList(list map[string]*Production, genres map[int64]string) ([]Produc
 		return result[i].WatchedTime > result[j].WatchedTime
 	})
 
-	for _, v := range result {
-		v.WatchedTime = math.Round(v.WatchedTime)
-	}
+	log.Println(result)
 
 	return result, nil
 }
@@ -133,18 +135,19 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	}
 	report.Trends = months
 
+	// genres
+	genres, err := getGenresTMDB()
+	if err != nil {
+		return err
+	}
+
 	// productions
-
-	genres := make(map[int64]string)
-
 	report.WatchedMovies, err = prepareList(watchedMovies, genres)
 	report.WatchedTV, err = prepareList(watchedTV, genres)
 
 	if err != nil {
 		return err
 	}
-
-	log.Println(genres)
 
 	return nil
 }
