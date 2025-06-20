@@ -103,20 +103,7 @@ router.post('/', async (req, res) => {
     })
     .catch(function (error) {
       console.log(error);
-      if(error = 1) {return res.status(500).send('API failed');}
-        else{
-        req.session.report = response.data;
-        fs.writeFile(
-        path.join(__dirname, '../../reports', req.session.reportId), 
-        JSON.stringify(response.data), 
-        (err) => {
-          if (err)
-            return res.status(500).send('Server failed');
-          else
-            return res.status(200).send('OK');
-        }
-      );
-    }
+      return res.status(500).send('API failed');   
   })
   .catch(function (error) {
     console.log(error);

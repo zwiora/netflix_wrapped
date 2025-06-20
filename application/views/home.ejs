@@ -60,18 +60,19 @@
   }
 
   .step-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1B1C1C;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: row;
+  background-color: #1B1C1C;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  min-height: 200px;
   }
 
   .step-content {
     flex: 1;
     margin-right: 1rem;
+    word-wrap: break-word;
   }
 
   .step-content input[disabled],
@@ -85,6 +86,7 @@
     font-size: 1rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
   }
 
   .step-content p {
@@ -113,14 +115,13 @@
   }
 
   .step-img {
-    width: 180px;
-    height: 100px;
-    background-image: url('/assets/placeholder.png');
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
+  width: 50%;
+  height: auto;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+}
 
     .upload-row {
     display: flex;
@@ -150,6 +151,7 @@
     font-size: 0.75rem;
     color: #666;
   }
+
 </style>
 
 <div class="header-banner">
@@ -170,7 +172,7 @@
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
       </button>
     </div>
-    <div class="step-img"></div>
+    <div class="step-img" style="background-image: url('/Assets/step1.png');"></div>
   </div>
 
   <!-- Step 2 -->
@@ -189,10 +191,10 @@
         </div>
       </form>
     </div>
-    <div class="step-img"></div>
+    <div class="step-img" style="background-image: url('/Assets/step2.png');"></div>
   </div>
 
-
+<!-- a -->
   <!-- Step 3 -->
   <div class="step-card">
     <div class="step-content">
@@ -200,6 +202,7 @@
       <p>Select a date range for your wrapped summary.</p>
       <input type="date" name="startDate" id="startDate" disabled />
       <input type="date" name="endDate" id="endDate" disabled />
+      <!-- <input type="text" name="username" placeholder="Username" /> -->
     </div>
     <div class="step-img"></div>
   </div>
@@ -215,12 +218,7 @@
     </div>
     <div class="step-img"></div>
   </div>
-  <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="netflixData" id="netflixData" required>
-    <input type="date" name="startDate" id="startDate" required><input type="date" name="endDate" id="endDate" required>
-    <input type="text" name="username" required>
-    <input type="submit" value="Submit">
-  </form> -->
+
 
 <footer>
   Made by WUST students for SSD project. Not affiliated with Netflix.
@@ -275,68 +273,60 @@
     fileDisplay.style.display = 'flex';
   });
 
-//   async function generateReport() {
-//   if (!tempFile) {
-//     alert('Please upload a CSV file first.');
-//     return;
-//   }
-
-//   const formData = new FormData();
-//   formData.append('netflixData', tempFile);
-
-//   try {
-//     const res = await fetch('/upload', {
-//       method: 'POST',
-//       body: formData
-//     });
-
-//     let data = {};
-//     try {
-//       data = await res.json();
-//     } catch (err) {
-//       const text = await res.text();
-//       if (res.ok && text === 'OK') {
-//         data.success = true;
-//       } else {
-//         data.success = false;
-//         data.error = text;
-//       }
-//     }
-
-//     if (data.success) {
-//       window.location.href = '/waiting';
-//     } else {
-//       throw new Error(data.error || 'Upload failed.');
-//     }
-//   } catch (err) {
-//     document.getElementById('startDate').disabled = true;
-//     document.getElementById('endDate').disabled = true;
-//     document.getElementById('generateBtn').disabled = true;
-
-//     console.error('Upload error:', err);
-//     alert('Upload failed. Please try again.');
-
-//     await fetch('/cleanup', { method: 'POST' });
-
-//     tempFile = null;
-//     fileInput.value = '';
-//     fileDisplay.style.display = 'none';
-//   }
-// }
-async function generateReport() {
+  async function generateReport() {
   if (!tempFile) {
     alert('Please upload a CSV file first.');
     return;
   }
 
-  // Set the file input manually with the tempFile
-  const dataTransfer = new DataTransfer();
-  dataTransfer.items.add(tempFile);
-  fileInput.files = dataTransfer.files;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
 
-  // Submit the form programmatically
-  document.getElementById('uploadForm').submit();
+  if (!startDate || !endDate) {
+    alert('Please select both start and end dates.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('netflixData', tempFile);
+  formData.append('startDate', startDate);
+  formData.append('endDate', endDate);
+
+  try {
+    const res = await fetch('/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Upload failed.');
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      window.location.href = '/waiting';
+    } else {
+      throw new Error(data.error || 'Upload failed.');
+    }
+
+  } catch (err) {
+    document.getElementById('startDate').disabled = true;
+    document.getElementById('endDate').disabled = true;
+    document.getElementById('generateBtn').disabled = true;
+
+    console.error('Upload error:', err);
+    alert('Upload failed. Please try again.');
+
+    await fetch('/cleanup', { method: 'POST' });
+
+    tempFile = null;
+    fileInput.value = '';
+    fileDisplay.style.display = 'none';
+  }
 }
+
 </script>
 
 <script>
