@@ -63,8 +63,8 @@ type BingeSession struct {
 }
 
 type Month struct {
-	Number    int `json:"number"`    // 1-12 for January-December
-	TimeSpent int `json:"timeSpent"` // in minutes
+	Month     string `json:"month"`
+	TimeSpent int    `json:"timeSpent"` // in minutes
 }
 
 type Report struct {

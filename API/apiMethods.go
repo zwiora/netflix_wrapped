@@ -138,11 +138,11 @@ var mockReport = Report{
 		},
 	},
 	Trends: []Month{
-		{Number: 1, TimeSpent: 320},
-		{Number: 2, TimeSpent: 410},
-		{Number: 3, TimeSpent: 550},
-		{Number: 4, TimeSpent: 610},
-		{Number: 5, TimeSpent: 720},
+		{Month: "2024.11", TimeSpent: 320},
+		{Month: "2024.12", TimeSpent: 410},
+		{Month: "2025.01", TimeSpent: 550},
+		{Month: "2025.02", TimeSpent: 610},
+		{Month: "2025.03", TimeSpent: 720},
 	},
 	WatchedList: []Production{
 		{Title: "Inception", Type: Movie, Genre: []string{"Sci-Fi"}, Rating: 9.0, WatchedTime: 148},
