@@ -71,13 +71,13 @@ type Month struct {
 type Report struct {
 	UserName        string             `json:"userName"`
 	TotalWatchTime  float64            `json:"totalWatchTime"`
-	AverageRating   float64            `json:"averageRating"`
+	AverageRating   float32            `json:"averageRating"`
 	BestMovie       ProductionDetailed `json:"bestMovie"`
 	BestTV          ProductionDetailed `json:"bestTV"`
 	WorstMovie      ProductionDetailed `json:"worstMovie"`
 	WorstTV         ProductionDetailed `json:"worstTV"`
 	FavouriteActors []Actor            `json:"favouriteActors"`
-	FavouriteGenres []Genre            `json:"favouriteGenres"`
+	Genres          []Genre            `json:"genres"`
 	BingeSessions   []BingeSession     `json:"bingeSessions"`
 	Trends          []Month            `json:"trends"`
 	WatchedMovies   []Production       `json:"watchedMovies"`

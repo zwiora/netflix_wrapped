@@ -60,8 +60,6 @@ func prepareList(list map[string]*Production, genres map[int64]string) ([]Produc
 		return result[i].WatchedTime > result[j].WatchedTime
 	})
 
-	log.Println(result)
-
 	return result, nil
 }
 
@@ -142,12 +140,61 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	}
 
 	// productions
+	log.Println("Generating list of movies")
 	report.WatchedMovies, err = prepareList(watchedMovies, genres)
+	log.Println("Generating list of TV series")
 	report.WatchedTV, err = prepareList(watchedTV, genres)
 
 	if err != nil {
 		return err
 	}
+
+	// Second traversal
+	var counter int
+	var sum float32
+	timeByGenre := make(map[string]float64)
+	productionsByGenre := make(map[string]int)
+
+	for _, v := range report.WatchedMovies {
+		//average rating
+		counter++
+		sum += v.Rating
+
+		//genre
+		for _, g := range v.Genre {
+			timeByGenre[g] += v.WatchedTime
+			productionsByGenre[g]++
+		}
+	}
+	for _, v := range report.WatchedTV {
+		//average rating
+		counter++
+		sum += v.Rating
+
+		//genre
+		for _, g := range v.Genre {
+			timeByGenre[g] += v.WatchedTime
+			productionsByGenre[g]++
+		}
+	}
+
+	// verage rating
+	report.AverageRating = sum / float32(counter)
+
+	// genre
+	var genresArr []Genre
+	for k, v := range timeByGenre {
+		g := new(Genre)
+		g.Name = k
+		g.TimeSpent = int(math.Round(v))
+		g.NumberOfProductions = productionsByGenre[k]
+
+		genresArr = append(genresArr, *g)
+	}
+	sort.Slice(genresArr, func(i, j int) bool {
+		return genresArr[i].TimeSpent > genresArr[j].TimeSpent
+	})
+	report.Genres = genresArr
 
 	return nil
 }

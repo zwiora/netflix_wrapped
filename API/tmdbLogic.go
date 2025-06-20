@@ -60,12 +60,10 @@ func getProductionTMDB(title string, prodType ProductionType) (int64, float32, [
 		}
 
 		for _, result := range searchResult.Results {
-			if result.Name == title {
-				id = result.ID
-				rating = result.VoteAverage
-				genres = result.GenreIDs
-				break
-			}
+			id = result.ID
+			rating = result.VoteAverage
+			genres = result.GenreIDs
+			break
 		}
 	} else {
 		log.Println("Searching for movie:", title)
@@ -74,12 +72,10 @@ func getProductionTMDB(title string, prodType ProductionType) (int64, float32, [
 			return 0, 0, nil, err
 		}
 		for _, result := range searchResult.Results {
-			if result.Title == title {
-				id = result.ID
-				rating = result.VoteAverage
-				genres = result.GenreIDs
-				break
-			}
+			id = result.ID
+			rating = result.VoteAverage
+			genres = result.GenreIDs
+			break
 		}
 	}
 
