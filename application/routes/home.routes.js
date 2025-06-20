@@ -23,11 +23,14 @@ router.post('/upload', (req, res) => {
     keepExtensions: true
   });
   form.parse(req, function (err, fields, files) {
-    if (err || !files.netflixData) {
-      return res.status(400).send('No file uploaded.');
+    if (err || !files.netflixData || !fields.startDate || !fields.endDate || !fields.username) {
+      return res.status(400).send('Form is invalid.');
     }
     const uploadedFile = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
     req.session.reportId = uploadedFile.newFilename;
+    req.session.startDate = fields.startDate;
+    req.session.endDate = fields.endDate;
+    req.session.username = fields.username;
     res.redirect('/waiting');
   })
 });
