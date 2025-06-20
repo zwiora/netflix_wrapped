@@ -252,12 +252,12 @@
 
     const file = fileInput.files[0];
 
-    if (!file || file.type !== 'text/csv') {
-      alert('Please upload a valid CSV file.');
-      fileInput.value = ''; // clear input
-      tempFile = null;
-      fileDisplay.style.display = 'none';
-      return;
+    if (!file || !file.name.toLowerCase().endsWith('.csv')) {
+    alert('Please upload a valid CSV file.');
+    fileInput.value = ''; // clear input
+    tempFile = null;
+    fileDisplay.style.display = 'none';
+    return;
     }
 
     tempFile = file;
