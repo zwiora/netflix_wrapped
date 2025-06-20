@@ -17,6 +17,10 @@ router.post('/', async (req, res) => {
     profiles: []
   };
   const uploadedFilePath = path.join(__dirname, '../../uploads', req.session.reportId);
+  if (!fs.existsSync(uploadedFilePath)) {
+    res.redirect('/');
+    return;
+  }
   const fileStream = fs.createReadStream(uploadedFilePath);
   const rl = readline.createInterface({
     input: fileStream,
