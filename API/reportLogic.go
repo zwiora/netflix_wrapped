@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -109,6 +110,9 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 		v.WatchedTime = math.Round(v.WatchedTime)
 		prodsTV = append(prodsTV, *v)
 	}
+	sort.Slice(prodsTV, func(i, j int) bool {
+		return prodsTV[i].WatchedTime > prodsTV[j].WatchedTime
+	})
 	report.WatchedTV = prodsTV
 
 	var prodsM []Production
