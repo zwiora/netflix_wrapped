@@ -41,12 +41,12 @@ type Genre struct {
 }
 
 type BingeSession struct {
-	Production        Production `json:"production"`
-	StartTime         string     `json:"startTime"`
-	EndTime           string     `json:"endTime"`
-	TotalWatchTime    int        `json:"totalWatchTime"` // in minutes
-	NumberOfEpisodes  int        `json:"numberOfEpisodes"`
-	PercentageWatched float64    `json:"percentageWatched"`
+	Production              *Production `json:"production"`
+	StartTime               string      `json:"startTime"`
+	EndTime                 string      `json:"endTime"`
+	TotalWatchTime          float32     `json:"totalWatchTime"` // in minutes
+	NumberOfWatchedEpisodes int         `json:"numberOfWatchedEpisodes"`
+	episodes                []string
 }
 
 type Month struct {

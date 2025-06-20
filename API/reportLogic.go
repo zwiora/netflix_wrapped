@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -34,6 +35,46 @@ func parseMonth(dateStr string) (string, error) {
 	}
 
 	return strconv.Itoa(t.Year()) + "." + strconv.Itoa(int(t.Month())), nil
+}
+
+func IsWithinThreeHours(dateStr1, dateStr2 string) (bool, error) {
+	layouts := []string{
+		"1/2/2006 15:04",      // m/d/y h:mm
+		"2006-01-02 15:04:05", // ISO format
+	}
+
+	var t1, t2 time.Time
+	var err error
+
+	// first date
+	for _, layout := range layouts {
+		t1, err = time.Parse(layout, dateStr1)
+		if err == nil {
+			break
+		}
+	}
+	if err != nil {
+		return false, err
+	}
+
+	// second date
+	err = nil
+	for _, layout := range layouts {
+		t2, err = time.Parse(layout, dateStr2)
+		if err == nil {
+			break
+		}
+	}
+	if err != nil {
+		return false, err
+	}
+
+	diff := t1.Sub(t2)
+	if diff < 0 {
+		diff = -diff
+	}
+
+	return diff <= 3*time.Hour, nil
 }
 
 func generateProdDetails(production *Production) *ProductionDetailed {
@@ -84,6 +125,7 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	timeByMonth := make(map[string]float64)
 	watchedMovies := make(map[string]*Production)
 	watchedTV := make(map[string]*Production)
+	bingeSessions := make(map[string][]BingeSession)
 
 	for _, v := range activity {
 		dur, err := parseTime(v.Duration)
@@ -120,6 +162,45 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 				}
 
 				production.Type = TV
+
+				// binge session
+
+				session, exists := bingeSessions[title]
+				if !exists {
+					var s BingeSession
+					s.Production = production
+					s.episodes = []string{v.Title}
+					s.StartTime = v.StartTime
+					s.EndTime = v.StartTime
+					s.TotalWatchTime = float32(dur.Minutes())
+
+					bingeSessions[title] = []BingeSession{s}
+				} else {
+					s := session[len(session)-1]
+					isWithin, err := IsWithinThreeHours(s.StartTime, v.StartTime)
+					if err != nil {
+						return err
+					}
+					if isWithin {
+						if !slices.Contains(s.episodes, v.Title) {
+							s.episodes = append(s.episodes, v.Title)
+						}
+						s.StartTime = v.StartTime
+						s.TotalWatchTime += float32(dur.Minutes())
+
+						session[len(session)-1] = s
+						bingeSessions[title] = session
+					} else {
+						var b BingeSession
+						b.Production = production
+						b.episodes = []string{v.Title}
+						b.StartTime = v.StartTime
+						b.EndTime = v.StartTime
+						b.TotalWatchTime = float32(dur.Minutes())
+
+						bingeSessions[title] = append(bingeSessions[title], b)
+					}
+				}
 			} else {
 				production, exists = watchedMovies[title]
 				if !exists {
@@ -162,6 +243,22 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	if err != nil {
 		return err
 	}
+
+	// binge
+	var resultBinges []BingeSession
+	for _, list := range bingeSessions {
+		for _, session := range list {
+			if len(session.episodes) >= 3 {
+				session.NumberOfWatchedEpisodes = len(session.episodes)
+				session.TotalWatchTime = float32(math.Round(float64(session.TotalWatchTime)))
+				resultBinges = append(resultBinges, session)
+			}
+		}
+	}
+	sort.Slice(resultBinges, func(i, j int) bool {
+		return resultBinges[i].TotalWatchTime > resultBinges[j].TotalWatchTime
+	})
+	report.BingeSessions = resultBinges
 
 	// Second traversal
 	var counter int
@@ -216,7 +313,7 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 		}
 	}
 
-	// verage rating
+	// average rating
 	report.AverageRating = sum / float32(counter)
 
 	// genre
@@ -247,7 +344,7 @@ func generateReport(data *Data) (*Report, error) {
 	var report *Report
 	report = new(Report)
 
-	profileIdx := 0
+	profileIdx := 2
 	userData := data.Profiles[profileIdx]
 
 	// fmt.Println(userData.N)
