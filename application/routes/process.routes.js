@@ -16,7 +16,12 @@ router.post('/', async (req, res) => {
   let activity = {
     profiles: []
   };
-  const fileStream = fs.createReadStream(path.join(__dirname, '../../uploads', req.session.reportId));
+  const uploadedFilePath = path.join(__dirname, '../../uploads', req.session.reportId);
+  if (!fs.existsSync(uploadedFilePath)) {
+    res.redirect('/');
+    return;
+  }
+  const fileStream = fs.createReadStream(uploadedFilePath);
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
@@ -60,11 +65,13 @@ router.post('/', async (req, res) => {
       country: l[9]
     })
   }
+  // Delete uploaded file
+  fs.unlink(uploadedFilePath, (_) => {});
 
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
     .then(function (response) {
-      if (response.status != 200) 
+      if (response.status != 200)
         return res.status(500).send('API failed');
       else {
         req.session.report = response.data;

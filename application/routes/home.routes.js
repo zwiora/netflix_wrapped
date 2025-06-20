@@ -3,7 +3,6 @@ const _ = require('express-session');
 const router = express.Router();
 const formidable = require('formidable');
 const path = require('path');
-const fs = require('fs');
 
 
 router.get('/', function(_, res, next) {
@@ -19,30 +18,19 @@ router.get('/waiting', (_, res) => {
 });
 
 router.post('/upload', (req, res) => {
-  const form = new formidable.IncomingForm({
+  let form = new formidable.IncomingForm({
     uploadDir: path.join(__dirname, '../../uploads'),
     keepExtensions: true
   });
-
   form.parse(req, function (err, fields, files) {
     if (err || !files.netflixData) {
-      return res.status(400).json({ success: false, error: 'No file uploaded.' });
+      return res.status(400).send('No file uploaded.');
     }
-
-    const uploadedFile = Array.isArray(files.netflixData)
-      ? files.netflixData[0]
-      : files.netflixData;
-
-    // Save it temporarily (could store path in session, too)
-    req.session.uploadedFile = uploadedFile;
-
-    return res.status(200).json({
-      success: true,
-      filename: uploadedFile.originalFilename
-    });
-  });
+    const uploadedFile = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
+    req.session.reportId = uploadedFile.newFilename;
+    res.redirect('/waiting');
+  })
 });
-
 
 router.get('/report', (req, res) => {
   if (!req.session.reportId) {
@@ -64,6 +52,6 @@ router.get('/report/:id', (req, res) => {
   } catch (_) {
     res.redirect('/');
   }
-})
+});
 
 module.exports = router;
