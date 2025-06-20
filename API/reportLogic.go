@@ -38,24 +38,62 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 
 	var totalTime time.Duration
 	timeByMonth := make(map[string]float64)
+	watchedMovies := make(map[string]*Production)
+	watchedTV := make(map[string]*Production)
 
 	for _, v := range activity {
-
 		dur, err := parseTime(v.Duration)
 		if err != nil {
 			return err
 		}
-		totalTime += dur
 
-		month, err := parseMonth(v.StartTime)
-		if err != nil {
-			return err
+		if dur.Minutes() >= 5 {
+			// total time
+			totalTime += dur
+
+			// trends
+			month, err := parseMonth(v.StartTime)
+			if err != nil {
+				return err
+			}
+			timeByMonth[month] += dur.Minutes()
+
+			// production
+			var production *Production
+			var exists bool
+			title := v.Title
+			splited := strings.Split(title, ": ")
+
+			if len(splited) > 2 {
+				title = splited[0]
+
+				production, exists = watchedTV[title]
+				if !exists {
+					watchedTV[title] = new(Production)
+					production = watchedTV[title]
+
+					production.Title = title
+				}
+
+				production.Type = TV
+			} else {
+				production, exists = watchedMovies[title]
+				if !exists {
+					watchedMovies[title] = new(Production)
+					production = watchedMovies[title]
+
+					production.Title = title
+				}
+				production.Type = Movie
+			}
+			production.WatchedTime += dur.Minutes()
 		}
-		timeByMonth[month] += dur.Minutes()
 	}
 
+	// total time
 	report.TotalWatchTime = totalTime.Minutes()
 
+	// trends
 	var months []Month
 	for k, v := range timeByMonth {
 		var m Month
@@ -63,8 +101,23 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 		m.TimeSpent = int(math.Round(v))
 		months = append(months, m)
 	}
-
 	report.Trends = months
+
+	// productions
+	var prodsTV []Production
+	for _, v := range watchedTV {
+		v.WatchedTime = math.Round(v.WatchedTime)
+		prodsTV = append(prodsTV, *v)
+	}
+	report.WatchedTV = prodsTV
+
+	var prodsM []Production
+	for _, v := range watchedMovies {
+		v.WatchedTime = math.Round(v.WatchedTime)
+		prodsM = append(prodsM, *v)
+	}
+	report.WatchedMovies = prodsM
+
 	return nil
 }
 
