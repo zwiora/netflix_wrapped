@@ -2,5 +2,5 @@
 /uploads
 /reports
 API/netflix_wrapped_api
-API/apiKey.go
 *.exe
+API/tmdbKey.go

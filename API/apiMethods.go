@@ -8,7 +8,7 @@ import (
 )
 
 var mockReport = Report{
-	TotalWatchTime: 3120,
+	TotalWatchTime: 123,
 	AverageRating:  7.9,
 	BestMovie: ProductionDetailed{
 		Title:            "Inception",
@@ -166,6 +166,11 @@ func postData(c *gin.Context) {
 		return
 	}
 
+	report, err := generateReport(&newEntity)
+
+	if err != nil {
+		return
+	}
 	uploadedData = append(uploadedData, newEntity)
-	c.IndentedJSON(http.StatusOK, mockReport)
+	c.IndentedJSON(http.StatusOK, report)
 }

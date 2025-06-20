@@ -68,7 +68,8 @@ type Month struct {
 }
 
 type Report struct {
-	TotalWatchTime  int                `json:"totalWatchTime"`
+	UserName        string             `json:"userName"`
+	TotalWatchTime  float64            `json:"totalWatchTime"`
 	AverageRating   float64            `json:"averageRating"`
 	BestMovie       ProductionDetailed `json:"bestMovie"`
 	BestTV          ProductionDetailed `json:"bestTV"`
