@@ -344,7 +344,7 @@ func generateReport(data *Data) (*Report, error) {
 	var report *Report
 	report = new(Report)
 
-	profileIdx := 2
+	profileIdx := 0
 	userData := data.Profiles[profileIdx]
 
 	// fmt.Println(userData.N)
