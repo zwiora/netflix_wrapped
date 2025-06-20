@@ -1,7 +1,7 @@
 <%- include('partials/_head'); %>
 <%- include('partials/_header'); %>
 
-<style>
+<!-- <style>
   body {
     background-color: black;
     color: white;
@@ -18,13 +18,249 @@
     margin-top: 2rem;
   }
 </style>
-
+-->
 <h1>Your Netflix Wrapped Report</h1>
 
 <div class="report-section">
   <pre><%= JSON.stringify(report) %></pre>
   <br>
-  <a href="/report/<%= reportId %>">Link to share your report</a>
+  <!-- <a href="/report/<%= reportId %>">Link to share your report</a> -->
+</div> 
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #e50914;
+    }
+
+    .chart-container {
+      max-width: 500px;
+      margin-top: 3rem;
+      background-color: #111;
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+    }
+  
+  .highlight-section {
+    margin-top: 3rem;
+  }
+
+  .highlight-section h2 {
+    color: #e50914;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .media-card {
+    background-color: #1c1c1c;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .media-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .media-info {
+    padding: 1rem;
+  }
+
+  .media-info h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #fff;
+  }
+
+  .media-info p {
+    margin: 0.2rem 0;
+    color: #ccc;
+  }
+
+  .media-info p strong {
+    color: #fff;
+  }
+
+  .overview {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #aaa;
+  }
+
+  </style>
+</head>
+<body>
+  
+
+  <p><strong>User:</strong> <%= report.userName %></p>
+  <p><strong>Total Watch Time:</strong> <%= report.totalWatchTime.toFixed(2) %> minutes</p>
+
+  <!-- <div class="chart-container">
+    <h2>Movies vs TV Shows</h2>
+    <canvas id="typeChart"></canvas>
+  </div> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Dummy data since report.watchedList is null
+    const watchedList = [
+      { title: "Movie A", type: "Movie" },
+      { title: "Show A", type: "TV" },
+      { title: "Movie B", type: "Movie" },
+      { title: "Show B", type: "TV" },
+      { title: "Movie C", type: "Movie" }
+    ];
+
+    const movieCount = watchedList.filter(item => item.type === 'Movie').length;
+    const tvCount = watchedList.filter(item => item.type === 'TV').length;
+
+    const ctx = document.getElementById('typeChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Movies', 'TV Shows'],
+        datasets: [{
+          label: '# of Titles Watched',
+          data: [movieCount, tvCount],
+          backgroundColor: ['#e50914', '#888']
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#fff'
+            },
+            grid: {
+              color: '#444'
+            }
+          },
+          x: {
+            ticks: {
+              color: '#fff'
+            },
+            grid: {
+              color: '#444'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fff'
+            }
+          }
+        }
+      }
+    });
+  </script>
+  
+  <div class="chart-container">
+  <h2>Watch Time Over Time</h2>
+  <canvas id="timelineChart"></canvas>
 </div>
 
+<script>
+  const trends = <%- JSON.stringify(report.trends || []) %>;
+
+  // Convert "YYYY.M" to a readable format like "Mar 2024"
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const formattedData = trends.map(t => {
+    const [year, month] = t.month.split('.').map(Number);
+    return {
+      label: `${monthNames[month - 1]} ${year}`,
+      hours: (t.timeSpent / 60).toFixed(2) // convert minutes to hours
+    };
+  });
+
+  // Sort chronologically
+  formattedData.sort((a, b) => {
+    const [ay, am] = a.label.split(' ');
+    const [by, bm] = b.label.split(' ');
+    return new Date(`${am} 1, ${ay}`) - new Date(`${bm} 1, ${by}`);
+  });
+
+  const ctx2 = document.getElementById('timelineChart');
+
+  new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: formattedData.map(d => d.label),
+      datasets: [{
+        label: 'Hours Watched',
+        data: formattedData.map(d => d.hours),
+        borderColor: '#e50914',
+        backgroundColor: 'rgba(229,9,20,0.2)',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Hours',
+            color: '#fff'
+          },
+          ticks: { color: '#fff' },
+          grid: { color: '#444' }
+        },
+        x: {
+          ticks: { color: '#fff' },
+          grid: { color: '#444' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: '#fff'
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.parsed.y} hrs`
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
 <%- include('partials/_footer'); %>
