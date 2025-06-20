@@ -20,7 +20,7 @@ router.get('/waiting', (_, res) => {
 router.post('/upload', (req, res) => {
   let form = new formidable.IncomingForm({
     uploadDir: path.join(__dirname, '../../uploads'),
-    keepExtensions: true
+    keepExtensions: false
   });
   form.parse(req, function (err, fields, files) {
     if (err || !files.netflixData || !fields.startDate || !fields.endDate || !fields.username) {

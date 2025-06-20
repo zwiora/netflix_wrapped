@@ -38,7 +38,7 @@
       const response = await fetch('/process', {
         method: 'POST'
       });
-
+      console.log(response)
       if (response.ok) {
         window.location.href = '/report';
         gotResponse = true;

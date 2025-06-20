@@ -161,23 +161,23 @@
 
 <div class="main-container">
   <!-- Step 1 -->
-  <!-- <div class="step-card">
+  <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
-      <p>You must log into Netflix and download your history.</p>
-      <button onclick="window.open('https://www.netflix.com/viewingactivity', '_blank')">
+      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request)</p>
+      <button onclick="window.open('https://www.netflix.com/account/getmyinfo', '_blank')">
         Netflix View Activity
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
       </button>
     </div>
     <div class="step-img"></div>
-  </div> -->
+  </div>
 
   <!-- Step 2 -->
-  <!-- <div class="step-card">
+  <div class="step-card">
     <div class="step-content">
       <h2>2. Upload CSV</h2>
-      <p>Click to choose your viewing activity CSV file.</p>
+      <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
         <div class="upload-row">
@@ -190,11 +190,11 @@
       </form>
     </div>
     <div class="step-img"></div>
-  </div> -->
+  </div>
 
 
   <!-- Step 3 -->
-  <!-- <div class="step-card">
+  <div class="step-card">
     <div class="step-content">
       <h2>3. Choose timespan</h2>
       <p>Select a date range for your wrapped summary.</p>
@@ -202,10 +202,10 @@
       <input type="date" name="endDate" id="endDate" disabled />
     </div>
     <div class="step-img"></div>
-  </div> -->
+  </div>
 
   <!-- Step 4 -->
-  <!-- <div class="step-card">
+  <div class="step-card">
     <div class="step-content">
       <h2>4. Generate report</h2>
       <p>Click the button to generate your Netflix Wrapped!</p>
@@ -214,19 +214,19 @@
       </button>
     </div>
     <div class="step-img"></div>
-  </div> -->
-  <form action="/upload" method="post" enctype="multipart/form-data">
+  </div>
+  <!-- <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="netflixData" id="netflixData" required>
     <input type="date" name="startDate" id="startDate" required><input type="date" name="endDate" id="endDate" required>
     <input type="text" name="username" required>
     <input type="submit" value="Submit">
-  </form>
+  </form> -->
 
 <footer>
   Made by WUST students for SSD project. Not affiliated with Netflix.
 </footer>
 
-<!-- <script>
+<script>
   let tempFile = null;
 
   const fileInput = document.getElementById('fileInput');
@@ -265,7 +265,7 @@
     fileDisplay.style.display = 'none';
     return;
     }
-
+    
     tempFile = file;
 
     fileDisplay.innerHTML = `
@@ -275,45 +275,68 @@
     fileDisplay.style.display = 'flex';
   });
 
-  async function generateReport() {
-    if (!tempFile) {
-      alert('Please upload a CSV file first.');
-      return;
-    }
+//   async function generateReport() {
+//   if (!tempFile) {
+//     alert('Please upload a CSV file first.');
+//     return;
+//   }
 
-    const formData = new FormData();
-    formData.append('netflixData', tempFile);
+//   const formData = new FormData();
+//   formData.append('netflixData', tempFile);
 
-    try {
-      const res = await fetch('/upload', {
-        method: 'POST',
-        body: formData
-      });
+//   try {
+//     const res = await fetch('/upload', {
+//       method: 'POST',
+//       body: formData
+//     });
 
-      const data = await res.json();
+//     let data = {};
+//     try {
+//       data = await res.json();
+//     } catch (err) {
+//       const text = await res.text();
+//       if (res.ok && text === 'OK') {
+//         data.success = true;
+//       } else {
+//         data.success = false;
+//         data.error = text;
+//       }
+//     }
 
-      if (data.success) {
-        window.location.href = '/waiting';
-      } else {
-        throw new Error(data.error || 'Upload failed.');
-      }
-    } catch (err) {
-      document.getElementById('startDate').disabled = true;
-      document.getElementById('endDate').disabled = true;
-      document.getElementById('generateBtn').disabled = true;
+//     if (data.success) {
+//       window.location.href = '/waiting';
+//     } else {
+//       throw new Error(data.error || 'Upload failed.');
+//     }
+//   } catch (err) {
+//     document.getElementById('startDate').disabled = true;
+//     document.getElementById('endDate').disabled = true;
+//     document.getElementById('generateBtn').disabled = true;
 
-      console.error('Upload error:', err);
-      alert('Upload failed. Please try again.');
+//     console.error('Upload error:', err);
+//     alert('Upload failed. Please try again.');
 
-      // Optional: tell the backend to clean up the partial upload
-      await fetch('/cleanup', { method: 'POST' });
+//     await fetch('/cleanup', { method: 'POST' });
 
-      // Reset file + UI
-      tempFile = null;
-      fileInput.value = '';
-      fileDisplay.style.display = 'none';
-    }
+//     tempFile = null;
+//     fileInput.value = '';
+//     fileDisplay.style.display = 'none';
+//   }
+// }
+async function generateReport() {
+  if (!tempFile) {
+    alert('Please upload a CSV file first.');
+    return;
   }
+
+  // Set the file input manually with the tempFile
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(tempFile);
+  fileInput.files = dataTransfer.files;
+
+  // Submit the form programmatically
+  document.getElementById('uploadForm').submit();
+}
 </script>
 
 <script>
@@ -362,7 +385,7 @@
       endDateInput.value = '';
     }
   });
-</script> -->
+</script>
 
 
 <%- include('partials/_footer'); %>
