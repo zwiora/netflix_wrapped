@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"sort"
 	"strconv"
@@ -35,8 +36,36 @@ func parseMonth(dateStr string) (string, error) {
 	return strconv.Itoa(t.Year()) + "." + strconv.Itoa(int(t.Month())), nil
 }
 
+func prepareList(list map[string]*Production, genres map[int64]string) ([]Production, error) {
+	var result []Production
+
+	for _, v := range list {
+		id, rating, genresIDs, err := callTMDB(v.Title, v.Type)
+		if err != nil {
+			return nil, err
+		}
+
+		v.id = int(id)
+		v.Rating = rating
+		v.genresIDs = genresIDs
+
+		result = append(result, *v)
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].WatchedTime > result[j].WatchedTime
+	})
+
+	for _, v := range result {
+		v.WatchedTime = math.Round(v.WatchedTime)
+	}
+
+	return result, nil
+}
+
 func analyseData(activity []ViewingActivity, report *Report) error {
 
+	var err error
 	var totalTime time.Duration
 	timeByMonth := make(map[string]float64)
 	watchedMovies := make(map[string]*Production)
@@ -105,22 +134,17 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	report.Trends = months
 
 	// productions
-	var prodsTV []Production
-	for _, v := range watchedTV {
-		v.WatchedTime = math.Round(v.WatchedTime)
-		prodsTV = append(prodsTV, *v)
-	}
-	sort.Slice(prodsTV, func(i, j int) bool {
-		return prodsTV[i].WatchedTime > prodsTV[j].WatchedTime
-	})
-	report.WatchedTV = prodsTV
 
-	var prodsM []Production
-	for _, v := range watchedMovies {
-		v.WatchedTime = math.Round(v.WatchedTime)
-		prodsM = append(prodsM, *v)
+	genres := make(map[int64]string)
+
+	report.WatchedMovies, err = prepareList(watchedMovies, genres)
+	report.WatchedTV, err = prepareList(watchedTV, genres)
+
+	if err != nil {
+		return err
 	}
-	report.WatchedMovies = prodsM
+
+	log.Println(genres)
 
 	return nil
 }

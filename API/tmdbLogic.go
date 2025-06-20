@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	tmdb "github.com/cyruzin/golang-tmdb"
 )
@@ -22,52 +20,56 @@ func initializeTMDB() (*tmdb.Client, error) {
 	return tmdbClient, nil
 }
 
-func callTMDB(tmdbClient *tmdb.Client, title string) error {
+func callTMDB(title string, prodType ProductionType) (int64, float32, []int64, error) {
 
 	var id int64
-	// Check if the title contains a colon, indicating it might be a TV show
-	if strings.Contains(title, ":") {
+	var rating float32
+	var genres []int64
 
-		seriesTitle := strings.Split(title, ": ")[0]
-		log.Println("Searching for TV Show:", seriesTitle)
+	if prodType == TV {
 
-		searchResult, err := tmdbClient.GetSearchTVShow(seriesTitle, nil)
+		log.Println("Searching for TV Show:", title)
+
+		searchResult, err := tmdbClient.GetSearchTVShow(title, nil)
 		if err != nil {
-			return err
+			return 0, 0, nil, err
 		}
 
 		for _, result := range searchResult.Results {
-			if result.Name == seriesTitle {
+			if result.Name == title {
 				id = result.ID
+				rating = result.VoteAverage
+				genres = result.GenreIDs
 				break
 			}
 		}
-	} else
-	// If the title does not contain a colon, treat it as a movie
-	{
+	} else {
 		log.Println("Searching for movie:", title)
 		searchResult, err := tmdbClient.GetSearchMovies(title, nil)
 		if err != nil {
-			return err
+			return 0, 0, nil, err
 		}
 		for _, result := range searchResult.Results {
 			if result.Title == title {
 				id = result.ID
+				rating = result.VoteAverage
+				genres = result.GenreIDs
 				break
 			}
 		}
 	}
 
-	options := map[string]string{
-		"append_to_response": "images,credits",
-	}
-	productionDetails, err := tmdbClient.GetTVDetails(int(id), options) // ID BoJack Horseman
-	if err != nil {
-		return err
-	}
+	return id, rating, genres, nil
+	// options := map[string]string{
+	// 	"append_to_response": "images,credits",
+	// }
+	// productionDetails, err := tmdbClient.GetTVDetails(int(id), options) // ID BoJack Horseman
+	// if err != nil {
+	// 	return err
+	// }
 
-	// fmt.Println(productionDetails.TVImagesAppend.Images.Posters[0].FilePath)
-	fmt.Println(productionDetails)
+	// // fmt.Println(productionDetails.TVImagesAppend.Images.Posters[0].FilePath)
+	// fmt.Println(productionDetails)
 
 	// fmt.Println("Tytuł:", tvDetails.Name)
 	// fmt.Println("Gatunki:")
@@ -76,5 +78,5 @@ func callTMDB(tmdbClient *tmdb.Client, title string) error {
 	// 	fmt.Println("-", genre.Name)
 	// }
 
-	return nil
+	// return nil
 }

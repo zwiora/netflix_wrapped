@@ -11,9 +11,10 @@ type Production struct {
 	Title       string         `json:"title"`
 	Type        ProductionType `json:"type"`
 	Genre       []string       `json:"genre"`
-	Rating      float64        `json:"rating"`
+	Rating      float32        `json:"rating"`
 	WatchedTime float64        `json:"watchedTime"`
 	id          int
+	genresIDs   []int64
 }
 
 type ProductionDetailed struct {
