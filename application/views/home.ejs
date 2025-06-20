@@ -164,8 +164,8 @@
   <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
-      <p>You must log into Netflix and download your history.</p>
-      <button onclick="window.open('https://www.netflix.com/viewingactivity', '_blank')">
+      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request)</p>
+      <button onclick="window.open('https://www.netflix.com/account/getmyinfo', '_blank')">
         Netflix View Activity
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
       </button>
@@ -177,7 +177,7 @@
   <div class="step-card">
     <div class="step-content">
       <h2>2. Upload CSV</h2>
-      <p>Click to choose your viewing activity CSV file.</p>
+      <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
         <div class="upload-row">
@@ -259,7 +259,7 @@
     fileDisplay.style.display = 'none';
     return;
     }
-
+    
     tempFile = file;
 
     fileDisplay.innerHTML = `
@@ -283,7 +283,9 @@
         method: 'POST',
         body: formData
       });
-
+      
+      const text = await res.text();
+      console.log('Raw server response:', text);
       const data = await res.json();
 
       if (data.success) {
@@ -307,6 +309,7 @@
       fileInput.value = '';
       fileDisplay.style.display = 'none';
     }
+    
   }
 </script>
 
