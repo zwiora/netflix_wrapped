@@ -69,6 +69,16 @@
   min-height: 200px;
   }
 
+  .step-card-two {
+  display: flex;
+  flex-direction: row;
+  background-color: #1B1C1C;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  min-height: 120px;
+  }
+
   .step-content {
     flex: 1;
     margin-right: 1rem;
@@ -85,7 +95,7 @@
   .step-content h2 {
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     word-wrap: break-word;
   }
 
@@ -196,7 +206,7 @@
 
 <!-- a -->
   <!-- Step 3 -->
-  <div class="step-card">
+  <div class="step-card-two">
     <div class="step-content">
       <h2>3. Choose timespan</h2>
       <p>Select a date range for your wrapped summary.</p>
@@ -204,11 +214,10 @@
       <input type="date" name="endDate" id="endDate" disabled />
       <!-- <input type="text" name="username" placeholder="Username" /> -->
     </div>
-    <div class="step-img"></div>
   </div>
 
   <!-- Step 4 -->
-  <div class="step-card">
+  <div class="step-card-two">
     <div class="step-content">
       <h2>4. Generate report</h2>
       <p>Click the button to generate your Netflix Wrapped!</p>
@@ -216,7 +225,6 @@
         <img src="/Assets/icons/generate.svg" width="16" alt="Generate" /> Generate Report
       </button>
     </div>
-    <div class="step-img"></div>
   </div>
 
 
