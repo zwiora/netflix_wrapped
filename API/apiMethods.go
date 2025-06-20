@@ -169,8 +169,11 @@ func postData(c *gin.Context) {
 	report, err := generateReport(&newEntity)
 
 	if err != nil {
-		return
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "An error ocurred",
+		})
+	} else {
+		uploadedData = append(uploadedData, newEntity)
+		c.IndentedJSON(http.StatusOK, report)
 	}
-	uploadedData = append(uploadedData, newEntity)
-	c.IndentedJSON(http.StatusOK, report)
 }
