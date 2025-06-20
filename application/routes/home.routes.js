@@ -23,7 +23,9 @@ router.post('/upload', (req, res) => {
     keepExtensions: true
   });
   form.parse(req, function (err, fields, files) {
-    if (err || !files.netflixData || !fields.startDate || !fields.endDate || !fields.username) {
+    // || !files.netflixData || !fields.startDate || !fields.endDate || !fields.username
+    if (err) {
+      // console.log(err + files.netflixData + fields.startDate + fields.endDate + fields.username)
       return res.status(400).send('Form is invalid.');
     }
     const uploadedFile = Array.isArray(files.netflixData) ? files.netflixData[0] : files.netflixData;
