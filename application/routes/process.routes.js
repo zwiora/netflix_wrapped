@@ -16,7 +16,8 @@ router.post('/', async (req, res) => {
   let activity = {
     profiles: []
   };
-  const fileStream = fs.createReadStream(path.join(__dirname, '../../uploads', req.session.reportId));
+  const uploadedFilePath = path.join(__dirname, '../../uploads', req.session.reportId);
+  const fileStream = fs.createReadStream(uploadedFilePath);
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
@@ -64,23 +65,29 @@ router.post('/', async (req, res) => {
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
     .then(function (response) {
-      if (response.status != 200) 
+      if (response.status != 200) {
+        fs.unlink(uploadedFilePath, (_) => {});
         return res.status(500).send('API failed');
+      }
       else {
         req.session.report = response.data;
         fs.writeFile(
           path.join(__dirname, '../../reports', req.session.reportId), 
           JSON.stringify(response.data), 
           (err) => {
-            if (err)
+            if (err) {
+              fs.unlink(uploadedFilePath, (_) => {});
               return res.status(500).send('Server failed');
+            }
           }
         );
+        fs.unlink(uploadedFilePath, (_) => {});
         return res.status(200).send('OK');
       }
     })
     .catch(function (error) {
       console.log(error);
+      fs.unlink(uploadedFilePath, (_) => {});
       return res.status(500).send('API failed');
     });
 });
