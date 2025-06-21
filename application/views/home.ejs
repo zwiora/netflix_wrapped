@@ -5,6 +5,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
 
 <style>
+  #uploadForm {
+    display: contents;
+  }
+
   body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
@@ -112,10 +116,22 @@
     font-family: 'Open Sans', sans-serif;
   }
 
+    .step-content input[type="text"] {
+    background-color: #4F4F4F;
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-family: 'Open Sans', sans-serif;
+    width: 100%;
+    max-width: 300px;
+  }
+
   .step-img {
     width: 180px;
     height: 100px;
-    background-image: url('/assets/placeholder.png');
+    /* background-image: url('/assets/placeholder.png'); */
     background-size: cover;
     background-position: center;
     border-radius: 8px;
@@ -164,7 +180,7 @@
   <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
-      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request)</p>
+      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request).</p>
       <button onclick="window.open('https://www.netflix.com/account/getmyinfo', '_blank')">
         Netflix View Activity
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
@@ -173,33 +189,32 @@
     <div class="step-img"></div>
   </div>
 
+<form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
   <!-- Step 2 -->
   <div class="step-card">
     <div class="step-content">
       <h2>2. Upload CSV</h2>
       <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
-        <div class="upload-row">
-          <button type="button" id="uploadBtn">
-            <img src="/assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
-          </button>
-          <span id="fileDisplay" class="file-display" style="display: none;"></span>
-          </span>
-        </div>
-      </form>
+      <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
+      <div class="upload-row">
+        <button type="button" id="uploadBtn">
+          <img src="/assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
+        </button>
+        <span id="fileDisplay" class="file-display" style="display: none;"></span>
+      </div>
     </div>
     <div class="step-img"></div>
   </div>
-
 
   <!-- Step 3 -->
   <div class="step-card">
     <div class="step-content">
       <h2>3. Choose timespan</h2>
-      <p>Select a date range for your wrapped summary.</p>
-      <input type="date" name="startDate" id="startDate" disabled />
-      <input type="date" name="endDate" id="endDate" disabled />
+      <p>Select a date range for your wrapped summary.
+      </p>
+      <input type="date" name="startDate" id="startDate" required disabled />
+      <input type="date" name="endDate" id="endDate" required disabled />
     </div>
     <div class="step-img"></div>
   </div>
@@ -207,14 +222,26 @@
   <!-- Step 4 -->
   <div class="step-card">
     <div class="step-content">
-      <h2>4. Generate report</h2>
-      <p>Click the button to generate your Netflix Wrapped!</p>
+      <h2>4. Input profile name</h2>
+      <p>Enter the profile name that you want to generate the report for.</p>
+      <input type="text" name="username" id="username" placeholder="e.g. John Doe" required disabled />
+    </div>
+    <div class="step-img"></div>
+  </div>
+</form>
+
+  <!-- Step 5 -->
+  <div class="step-card">
+    <div class="step-content">
+      <h2>5. Generate report</h2>
+      <p>Click the button below to generate your Netflix Wrapped!</p>
       <button id="generateBtn" onclick="generateReport()" disabled>
         <img src="/Assets/icons/generate.svg" width="16" alt="Generate" /> Generate Report
       </button>
     </div>
     <div class="step-img"></div>
   </div>
+
   <!-- <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="netflixData" id="netflixData" required>
     <input type="date" name="startDate" id="startDate" required><input type="date" name="endDate" id="endDate" required>
@@ -240,6 +267,7 @@
   fileInput.addEventListener('change', () => {
     document.getElementById('startDate').disabled = false;
     document.getElementById('endDate').disabled = false;
+    document.getElementById('username').disabled = false;
     document.getElementById('generateBtn').disabled = false;
 
     // Set default range: last year
@@ -275,54 +303,6 @@
     fileDisplay.style.display = 'flex';
   });
 
-//   async function generateReport() {
-//   if (!tempFile) {
-//     alert('Please upload a CSV file first.');
-//     return;
-//   }
-
-//   const formData = new FormData();
-//   formData.append('netflixData', tempFile);
-
-//   try {
-//     const res = await fetch('/upload', {
-//       method: 'POST',
-//       body: formData
-//     });
-
-//     let data = {};
-//     try {
-//       data = await res.json();
-//     } catch (err) {
-//       const text = await res.text();
-//       if (res.ok && text === 'OK') {
-//         data.success = true;
-//       } else {
-//         data.success = false;
-//         data.error = text;
-//       }
-//     }
-
-//     if (data.success) {
-//       window.location.href = '/waiting';
-//     } else {
-//       throw new Error(data.error || 'Upload failed.');
-//     }
-//   } catch (err) {
-//     document.getElementById('startDate').disabled = true;
-//     document.getElementById('endDate').disabled = true;
-//     document.getElementById('generateBtn').disabled = true;
-
-//     console.error('Upload error:', err);
-//     alert('Upload failed. Please try again.');
-
-//     await fetch('/cleanup', { method: 'POST' });
-
-//     tempFile = null;
-//     fileInput.value = '';
-//     fileDisplay.style.display = 'none';
-//   }
-// }
 async function generateReport() {
   if (!tempFile) {
     alert('Please upload a CSV file first.');
@@ -337,6 +317,7 @@ async function generateReport() {
   // Submit the form programmatically
   document.getElementById('uploadForm').submit();
 }
+
 </script>
 
 <script>
