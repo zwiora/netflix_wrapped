@@ -547,7 +547,13 @@ new Chart(genreCtx, {
 <script>
 const chartData = <%- JSON.stringify(report.trends) %>;
 
-// Convert month strings to readable labels like "Nov 2024"
+// Sort the data chronologically
+chartData.sort((a, b) => {
+  const [aYear, aMonth] = a.month.split('.').map(Number);
+  const [bYear, bMonth] = b.month.split('.').map(Number);
+  return new Date(aYear, aMonth - 1) - new Date(bYear, bMonth - 1);
+});
+
 const months = chartData.map(item => {
   const [year, month] = item.month.split('.');
   const date = new Date(`${year}-${month}-01`);
