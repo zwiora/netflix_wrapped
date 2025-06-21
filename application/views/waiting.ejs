@@ -38,12 +38,12 @@
       const response = await fetch('/process', {
         method: 'POST'
       });
-      console.log(response)
+      const responseText = await response.text();
       if (response.ok) {
         window.location.href = '/report';
         gotResponse = true;
       } else {
-        statusEl.textContent = "Something went wrong with the API.";
+        statusEl.textContent = "Something went wrong: " + responseText;
         gotResponse = true;
       }
     } catch (e) {

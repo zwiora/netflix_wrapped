@@ -80,8 +80,8 @@ router.post('/', async (req, res) => {
   // Check if input is valid
   if (activity.profiles.length == 0)
     return res.status(500).send('No profiles with this name');
-  if (activity.profiles[0].viewingActivity.length[0])
-    return res.status(500).send('No viewing activity for this profile in this period');
+  if (activity.profiles[0].viewingActivity.length == 0)
+    return res.status(500).send('No viewing activity for this profile in this time period');
 
 
 //   // Load test data instead of calling the API
@@ -108,7 +108,7 @@ router.post('/', async (req, res) => {
   axios.post('http://localhost:8080/generate', activity)
     .then(function (response) {
       if (response.status != 200)
-        return res.status(500).send('API failed');
+        return res.status(500).send(response.data.error || 'API failed');
       else {
         req.session.report = response.data;
         fs.writeFile(
@@ -116,15 +116,14 @@ router.post('/', async (req, res) => {
           JSON.stringify(response.data), 
           (err) => {
             if (err)
-              return res.status(500).send('Server failed');
+              return res.status(500).send('Server error, couldn\'t save your report!');
           }
         );
         return res.status(200).send('OK');
       }
     })
     .catch(function (error) {
-      console.log(error);
-      return res.status(500).send('API failed');
+      return res.status(500).send(error.response.data.error || 'API failed');
     });
 });
 
