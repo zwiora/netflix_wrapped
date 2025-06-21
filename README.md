@@ -8,3 +8,6 @@ Then you can start the server with:
 
 And connect to it going to:
 `localhost:3000`
+
+## API
+Instructions for launching the API server are described in the API folder
