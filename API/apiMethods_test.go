@@ -12,11 +12,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// MOCK: podmieniamy generateReport na wersję testową
 var mockGenerateReport func(data *Data) (Report, error)
 
 func init() {
-	// External API
 	var err error
 	setApiKey()
 	tmdbClient, err = initializeTMDB()
@@ -24,7 +22,6 @@ func init() {
 		log.Println(err)
 	}
 
-	// Podmieniamy globalną funkcję generateReport na mock
 	mockGenerateReport = func(data *Data) (Report, error) {
 		return mockGenerateReport(data)
 	}
