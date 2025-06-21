@@ -402,6 +402,12 @@
   width: 1em;
 }
 
+.worst-card {
+  border-left: 5px solid #e50914;
+  padding-left: 1rem;
+}
+
+
 </style>
 
 <div class="report-wrapper">
@@ -554,6 +560,71 @@
     </div>
   </section>
 </div>
+
+<div class="worst-card">
+  <div class="highlight-card wide-card">
+    <h3><img src="/assets/icons/movie.svg" alt="Movie" /> Worst Movie Watched</h3>
+    <div class="media-section">
+      <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.worstMovie.imageUrl.replace('http://localhost:3000', '') %>" alt="Movie Poster" />
+      <div class="media-details">
+        <div class="title"><%= report.worstMovie.title %></div>
+
+        <!-- Icons under title -->
+        <div class="icon-row">
+          <span class="icon-text">
+            <img src="/assets/icons/star.svg" alt="Rating" class="inline-icon" />
+            <%= report.worstMovie.rating.toFixed(1) %>
+          </span>
+          <span class="icon-text">
+            <img src="/assets/icons/clock.svg" alt="Duration" class="inline-icon" />
+            <%= report.worstMovie.watchedTime %> min
+          </span>
+        </div>
+
+        <p class="description"><%= report.worstMovie.overview %></p>
+        <p class="meta-line">
+          <%= report.worstMovie.genre.join(', ') %> ·
+          Premiere Date: <%= report.worstMovie.firstAirDate %> ·
+          Country: <%= report.worstMovie.originCountry.join(', ') %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="worst-card">
+  <div class="highlight-card wide-card">
+    <h3><img src="/assets/icons/tv.svg" alt="TV" /> Worst TV Show Watched</h3>
+    <div class="media-section">
+      <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.worstTV.imageUrl.replace('http://localhost:3000', '') %>" alt="TV Poster" />
+      <div class="media-details">
+        <div class="title"><%= report.worstTV.title %></div>
+
+        <!-- Icons under title -->
+        <div class="icon-row">
+          <span class="icon-text">
+            <img src="/assets/icons/star.svg" alt="Rating" class="inline-icon" />
+            <%= report.worstTV.rating.toFixed(1) %>
+          </span>
+          <span class="icon-text">
+            <img src="/assets/icons/clock.svg" alt="Duration" class="inline-icon" />
+            <%= Math.round(report.worstTV.watchedTime) %> min
+          </span>
+        </div>
+
+        <p class="description"><%= report.worstTV.overview %></p>
+        <p class="meta-line">
+          <%= report.worstTV.genre.join(', ') %> ·
+          Episodes: <%= report.worstTV.numberOfEpisodes %> ·
+          Premiere Date: <%= report.worstTV.firstAirDate %> ·
+          Country: <%= report.worstTV.originCountry.join(', ') %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
