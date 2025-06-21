@@ -340,32 +340,41 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	report.Genres = genresArr
 
 	// ranking
-	log.Println("Fetching production details")
-	tmp, err := generateProdDetails(&bestMovie)
-	if err != nil {
-		return err
+	if bestMovie.Rating > 0 {
+		log.Println("Fetching production details")
+		tmp, err := generateProdDetails(&bestMovie)
+		if err != nil {
+			return err
+		}
+		report.BestMovie = *tmp
 	}
-	report.BestMovie = *tmp
+	if bestTV.Rating > 0 {
 
-	tmp, err = generateProdDetails(&bestTV)
-	if err != nil {
-		return err
+		tmp, err := generateProdDetails(&bestTV)
+		if err != nil {
+			return err
+		}
+		report.BestTV = *tmp
 	}
-	report.BestTV = *tmp
-
-	tmp, err = generateProdDetails(&worstMovie)
-	if err != nil {
-		return err
+	if worstMovie.Rating < 11 {
+		tmp, err := generateProdDetails(&worstMovie)
+		if err != nil {
+			return err
+		}
+		report.WorstMovie = *tmp
 	}
-	report.WorstMovie = *tmp
-
-	tmp, err = generateProdDetails(&worstTV)
-	if err != nil {
-		return err
+	if worstTV.Rating < 11 {
+		tmp, err := generateProdDetails(&worstTV)
+		if err != nil {
+			return err
+		}
+		report.WorstTV = *tmp
 	}
-	report.WorstTV = *tmp
-
 	log.Println("Report complete")
+
+	if len(report.WatchedMovies) == 0 && len(report.WatchedTV) == 0 {
+		return fmt.Errorf("Not enough data")
+	}
 
 	return nil
 }
@@ -375,9 +384,15 @@ func generateReport(data *Data) (*Report, error) {
 	report = new(Report)
 
 	profileIdx := 0
+	if len(data.Profiles) < 1 {
+		return nil, fmt.Errorf("Empty data")
+	}
 	userData := data.Profiles[profileIdx]
 
 	report.UserName = userData.Name
+	if len(userData.ViewingActivity) < 1 {
+		return nil, fmt.Errorf("Empty history")
+	}
 	err := analyseData(userData.ViewingActivity, report)
 
 	return report, err
