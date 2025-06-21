@@ -152,10 +152,11 @@
   }
 
   .section-title {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
+    color: #e50914;
     font-weight: bold;
-    margin-bottom: 1rem;
-    color: #fff;
+    margin-bottom: 1.5rem;
+    text-align: center;
   }
 
   #genrePieChart {
@@ -176,6 +177,188 @@
     height: 100% !important;
     display: block;
   }
+
+.binge-section {
+  margin-top: 8rem; /* more space under the chart */
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.binge-title {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  margin-left: 2rem; /* aligns with chart title (if wrapped in same container) */
+}
+
+.binge-list {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.binge-item {
+  background-color: #1b1b1b;
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: 220px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+.binge-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.binge-name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.binge-detail {
+  font-size: 0.85rem;
+  color: #ccc;
+  margin-bottom: 0.25rem;
+}
+
+.media-list-section {
+  max-width: 1000px;
+  margin: 5rem auto 0 auto;
+  padding: 0 2rem;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  color: #e50914;
+  font-weight: bold;
+  margin: 3rem auto; 
+  margin-bottom: 1rem;
+}
+
+.watched-productions-section {
+  margin-top: 6rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.watched-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  justify-content: space-between;
+}
+
+.watched-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.watched-column h3 {
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.production-card {
+  background-color: #1c1c1c;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+}
+
+.production-card h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e50914;
+  margin-bottom: 0.5rem;
+}
+
+.production-card p {
+  margin: 0.25rem 0;
+}
+
+.icon-inline {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+.watched-productions {
+  max-width: 1000px;  /* Aligns with other sections */
+  margin: 6rem auto;  /* Add vertical spacing */
+  padding: 0 1rem;
+}
+
+.watched-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.watched-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.watched-column h3 {
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.watched-column h3 img {
+  width: 1.3rem;
+  height: 1.3rem;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.watched-item {
+  background-color: #1c1c1c;
+  padding: 1rem 1.2rem;
+  border-radius: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.watched-item h4 {
+  color: #e50914;
+  margin: 0 0 0.3rem;
+  font-size: 1.1rem;
+}
+
+.watched-item p {
+  margin: 0.3rem 0;
+  color: #ccc;
+}
+
+.watched-item .icon-text {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.watched-item .icon-text img {
+  width: 1rem;
+  height: 1rem;
+}
+
 </style>
 
 <div class="report-wrapper">
@@ -254,6 +437,65 @@
 <div class="chart-wrapper">
   <h3 class="section-title">Monthly Watch Time Trend (in minutes)</h3>
   <canvas id="watchTimeChart" width="900" height="320" style="margin: 2rem auto; display: block;"></canvas>
+</div>
+
+<!-- Binge Sessions -->
+<div class="binge-section">
+  <h2 class="section-title">Top Binge Sessions</h2>
+  <div class="binge-list">
+    <% report.bingeSessions.forEach(session => { %>
+      <div class="binge-item">
+        <div class="binge-name"><%= session.production.title %></div>
+        <div class="binge-detail"><strong>Genre:</strong> <%= session.production.genre[0] %></div>
+        <div class="binge-detail"><strong>Date:</strong> <%= session.startTime.split(' ')[0] %></div>
+        <div class="binge-detail"><strong>Watch Time:</strong> <%= session.totalWatchTime %> min</div>
+        <div class="binge-detail"><strong>Episodes:</strong> <%= session.numberOfWatchedEpisodes %></div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<div class="section-content">
+  <section class="watched-productions">
+    <h2 class="section-title">Watched Productions</h2>
+    <div class="watched-columns">
+
+      <!-- Movies Section -->
+      <div class="watched-column">
+        <h3><img src="assets/icons/movie.svg" alt="Movie Icon"> Movies</h3>
+        <% report.watchedMovies.forEach(movie => { %>
+          <div class="watched-item">
+            <h4><%= movie.title %></h4>
+            <p><strong>Genre:</strong> <%= movie.genre.join(', ') %></p>
+            <p class="icon-text">
+              <img src="assets/icons/star.svg" alt="Star"> <%= movie.rating.toFixed(1) %>
+            </p>
+            <p class="icon-text">
+              <img src="assets/icons/clock.svg" alt="Clock"> <%= movie.watchedTime %> min
+            </p>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- TV Series Section -->
+      <div class="watched-column">
+        <h3><img src="assets/icons/tv.svg" alt="TV Icon"> TV Series</h3>
+        <% report.watchedTV.forEach(tv => { %>
+          <div class="watched-item">
+            <h4><%= tv.title %></h4>
+            <p><strong>Genre:</strong> <%= tv.genre.join(', ') %></p>
+            <p class="icon-text">
+              <img src="assets/icons/star.svg" alt="Star"> <%= tv.rating.toFixed(1) %>
+            </p>
+            <p class="icon-text">
+              <img src="assets/icons/clock.svg" alt="Clock"> <%= tv.watchedTime %> min
+            </p>
+          </div>
+        <% }) %>
+      </div>
+
+    </div>
+  </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
