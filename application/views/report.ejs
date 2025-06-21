@@ -1,266 +1,358 @@
 <%- include('partials/_head'); %>
 <%- include('partials/_header'); %>
 
-<!-- <style>
+<style>
   body {
-    background-color: black;
-    color: white;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
     padding: 2rem;
-    font-family: Arial, sans-serif;
   }
 
-  h1 {
-    color: red;
+  .report-wrapper {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 1rem;
+    color: #fff;
+  }
+
+  .report-title {
+    color: #e50914;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .report-username {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+  }
+
+  .report-stats {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .stat-box {
+    text-align: center;
+  }
+
+  .stat-label {
+    color: #aaa;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0.25rem;
+  }
+
+  .cards-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .highlight-card {
+    background-color: #1B1C1C;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    color: #fff;
+  }
+
+  .highlight-card h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
     margin-bottom: 1rem;
   }
 
-  .report-section {
-    margin-top: 2rem;
-  }
-</style>
--->
-<h1>Your Netflix Wrapped Report</h1>
-
-<div class="report-section">
-  <pre><%= JSON.stringify(report, null, 2) %></pre>
-  <br>
-  <!-- <a href="/report/<%= reportId %>">Link to share your report</a> -->
-</div> 
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-    }
-
-    h1 {
-      color: #e50914;
-    }
-
-    .chart-container {
-      max-width: 500px;
-      margin-top: 3rem;
-      background-color: #111;
-      padding: 1rem;
-      border-radius: 12px;
-    }
-
-    canvas {
-      width: 100%;
-      height: auto;
-    }
-  
-  .highlight-section {
-    margin-top: 3rem;
+  .highlight-card h3 img {
+    width: 32px;
+    margin-right: 0.5rem;
   }
 
-  .highlight-section h2 {
-    color: #e50914;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-container {
+  .media-section {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
+    align-items: flex-start;
+    gap: 1rem;
   }
 
-  .media-card {
-    background-color: #1c1c1c;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    max-width: 320px;
+  .poster {
+    width: 90px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .media-details {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
   }
 
-  .media-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
+  .media-details .title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
   }
 
-  .media-info {
-    padding: 1rem;
-  }
-
-  .media-info h3 {
-    margin-top: 0;
-    font-size: 1.3rem;
-    color: #fff;
-  }
-
-  .media-info p {
-    margin: 0.2rem 0;
+  .media-details .info-line {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
     color: #ccc;
   }
 
-  .media-info p strong {
+  .media-details .info-line img {
+    width: 16px;
+    margin-right: 0.4rem;
+  }
+
+  .detail-line {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-bottom: 0.3rem;
+  }
+
+  .detail-line strong {
+    color: #fff;
+    font-weight: 600;
+    margin-right: 0.3rem;
+  }
+
+  .chart-section {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .chart-section canvas {
+    max-width: 900px;
+    height: 320px !important;
+    display: block;
+    margin: 2rem auto;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
     color: #fff;
   }
 
-  .overview {
-    margin-top: 0.5rem;
-    font-style: italic;
-    color: #aaa;
+  #genrePieChart {
+    max-width: 320px;
+    margin: 0 auto;
   }
 
-  </style>
-</head>
-<body>
-  
+  .chart-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    position: relative;
+    height: 320px;
+  }
 
-  <p><strong>User:</strong> <%= report.userName %></p>
-  <p><strong>Total Watch Time:</strong> <%= report.totalWatchTime.toFixed(2) %> minutes</p>
+  .chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+</style>
 
-  <!-- <div class="chart-container">
-    <h2>Movies vs TV Shows</h2>
-    <canvas id="typeChart"></canvas>
-  </div> -->
+<div class="report-wrapper">
+  <h1 class="report-title">Netflix Wrapped Report</h1>
+  <h2 class="report-username"><%= report.userName %></h2>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // Dummy data since report.watchedList is null
-    const watchedList = [
-      { title: "Movie A", type: "Movie" },
-      { title: "Show A", type: "TV" },
-      { title: "Movie B", type: "Movie" },
-      { title: "Show B", type: "TV" },
-      { title: "Movie C", type: "Movie" }
-    ];
+  <div class="report-stats">
+    <div class="stat-box">
+      <div class="stat-label">
+        <img src="/assets/icons/clock.svg" width="18" /> Total Watch Time
+      </div>
+      <div class="stat-value"><%= Math.round(report.totalWatchTime).toLocaleString() %> min</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">
+        <img src="/assets/icons/star.svg" width="18" /> Average Rating
+      </div>
+      <div class="stat-value"><%= report.averageRating.toFixed(1) %></div>
+    </div>
+  </div>
 
-    const movieCount = watchedList.filter(item => item.type === 'Movie').length;
-    const tvCount = watchedList.filter(item => item.type === 'TV').length;
+  <div class="cards-container">
+    <!-- Best Movie Watched -->
+    <div class="highlight-card">
+      <h3><img src="/assets/icons/movie.svg" alt="Movie" /> Best Movie Watched</h3>
+      <div class="media-section">
+        <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.bestMovie.imageUrl.replace('http://localhost:3000', '') %>" alt="Movie Poster" />
+        <div class="media-details">
+          <div class="title"><%= report.bestMovie.title %></div>
+          <div class="info-line">
+            <img src="/assets/icons/star.svg" alt="Rating" />
+            <%= report.bestMovie.rating.toFixed(1) %>
+          </div>
+          <p class="detail-line">
+            <strong>Genre:</strong> <%= report.bestMovie.genre.join(', ') %>
+          </p>
+        </div>
+      </div>
+    </div>
 
-    const ctx = document.getElementById('typeChart');
+    <!-- Best TV Show Watched -->
+    <div class="highlight-card">
+      <h3><img src="/assets/icons/tv.svg" alt="TV" /> Best TV Show Watched</h3>
+      <div class="media-section">
+        <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.bestTV.imageUrl.replace('http://localhost:3000', '') %>" alt="TV Poster" />
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Movies', 'TV Shows'],
-        datasets: [{
-          label: '# of Titles Watched',
-          data: [movieCount, tvCount],
-          backgroundColor: ['#e50914', '#888']
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: '#fff'
-            },
-            grid: {
-              color: '#444'
-            }
-          },
-          x: {
-            ticks: {
-              color: '#fff'
-            },
-            grid: {
-              color: '#444'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#fff'
-            }
-          }
-        }
-      }
-    });
-  </script>
-  
-  <div class="chart-container">
-  <h2>Watch Time Over Time</h2>
-  <canvas id="timelineChart"></canvas>
+        <div class="media-details">
+          <div class="title"><%= report.bestTV.title %></div>
+          <div class="info-line">
+            <img src="/assets/icons/star.svg" alt="Rating" />
+            <%= report.bestTV.rating.toFixed(1) %>
+          </div>
+          <div class="info-line">
+            <img src="/assets/icons/clock.svg" alt="Time" />
+            <%= Math.round(report.bestTV.watchedTime) %> min
+          </div>
+          <p class="detail-line">
+            <strong>Genre:</strong> <%= report.bestTV.genre.join(', ') %>
+          </p>
+          <p class="detail-line">
+            <strong>Episodes:</strong> <%= report.bestTV.numberOfEpisodes %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Genre Watch Time Pie Chart -->
+<div class="chart-wrapper">
+  <h3 class="section-title">Time Spent by Genre</h3>
+  <canvas id="genrePieChart" width="320" height="320"></canvas>
+</div>
+
+<!-- Monthly Watch Time Chart -->
+<div class="chart-wrapper">
+  <h3 class="section-title">Monthly Watch Time Trend (in minutes)</h3>
+  <canvas id="watchTimeChart" width="900" height="320" style="margin: 2rem auto; display: block;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-  const trends = <%- JSON.stringify(report.trends || []) %>;
+const genreData = <%- JSON.stringify(report.genres) %>;
+const genreCtx = document.getElementById('genrePieChart').getContext('2d');
 
-  // Convert "YYYY.M" to a readable format like "Mar 2024"
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-  const formattedData = trends.map(t => {
-    const [year, month] = t.month.split('.').map(Number);
-    return {
-      label: `${monthNames[month - 1]} ${year}`,
-      hours: (t.timeSpent / 60).toFixed(2) // convert minutes to hours
-    };
-  });
-
-  // Sort chronologically
-  formattedData.sort((a, b) => {
-    const [ay, am] = a.label.split(' ');
-    const [by, bm] = b.label.split(' ');
-    return new Date(`${am} 1, ${ay}`) - new Date(`${bm} 1, ${by}`);
-  });
-
-  const ctx2 = document.getElementById('timelineChart');
-
-  new Chart(ctx2, {
-    type: 'line',
-    data: {
-      labels: formattedData.map(d => d.label),
-      datasets: [{
-        label: 'Hours Watched',
-        data: formattedData.map(d => d.hours),
-        borderColor: '#e50914',
-        backgroundColor: 'rgba(229,9,20,0.2)',
-        tension: 0.3,
-        fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Hours',
-            color: '#fff'
-          },
-          ticks: { color: '#fff' },
-          grid: { color: '#444' }
-        },
-        x: {
-          ticks: { color: '#fff' },
-          grid: { color: '#444' }
-        }
-      },
-      plugins: {
-        legend: {
-          labels: {
-            color: '#fff'
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.parsed.y} hrs`
-          }
+new Chart(genreCtx, {
+  type: 'pie',
+  data: {
+    labels: genreData.map(g => g.name),
+    datasets: [{
+      data: genreData.map(g => g.timeSpent),
+      backgroundColor: [
+        '#e50914',  // Netflix red
+        '#4f4f4f',  // dark gray
+        '#8e8e8e',  // medium gray
+        '#aaaaaa',  // light gray
+        '#333333',  // deep gray
+        '#d81b60',  // rose
+        '#1e88e5',  // blue
+        '#43a047',  // green
+        '#fdd835',  // yellow
+        '#fb8c00',  // orange
+        '#6a1b9a',  // purple
+        '#00acc1'   // cyan
+      ],
+      borderColor: '#000',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {
+        position: 'right',
+        align: 'center',
+        labels: {
+          color: '#fff',
+          font: { size: 14 },
+          boxWidth: 20,
+          padding: 10
         }
       }
     }
-  });
+  }
+});
 </script>
 
-</body>
-</html>
+<script>
+const chartData = <%- JSON.stringify(report.trends) %>;
+
+// Convert month strings to readable labels like "Nov 2024"
+const months = chartData.map(item => {
+  const [year, month] = item.month.split('.');
+  const date = new Date(`${year}-${month}-01`);
+  return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+});
+
+const times = chartData.map(item => item.timeSpent);
+
+const watchCtx = document.getElementById('watchTimeChart').getContext('2d');
+
+new Chart(watchCtx, {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'Time Spent (min)',
+      data: times,
+      fill: true,
+      backgroundColor: 'rgba(229, 9, 20, 0.25)',
+      borderColor: '#e50914',
+      borderWidth: 2,
+      tension: 0.4,
+      pointBackgroundColor: '#e50914',
+      pointRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#fff' },
+        grid: { color: '#111' }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: { color: '#fff' },
+        grid: { color: '#111' }
+      }
+    }
+  }
+});
+
+</script>
+
 <%- include('partials/_footer'); %>
