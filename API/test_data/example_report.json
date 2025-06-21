@@ -1,0 +1,141 @@
+{
+  "userName": "John Doe",
+  "totalWatchTime": 7240,
+  "averageRating": 7.8,
+  "bestMovie": {
+    "title": "Inception",
+    "type": "Movie",
+    "genre": ["Sci-Fi", "Thriller"],
+    "rating": 9.0,
+    "watchedTime": 148,
+    "imageUrl": "https://image.tmdb.org/t/p/original/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    "overview": "A thief who infiltrates dreams to steal secrets gets a chance to have his past erased.",
+    "fullDuration": 148,
+    "firstAirDate": "2010-07-16",
+    "numberOfSeasons": 0,
+    "numberOfEpisodes": 0,
+    "originCountry": ["US"],
+    "originalLanguage": "en",
+    "originalTitle": "Inception"
+  },
+  "bestTV": {
+    "title": "Breaking Bad",
+    "type": "TV series",
+    "genre": ["Crime", "Drama"],
+    "rating": 9.5,
+    "watchedTime": 2100,
+    "imageUrl": "https://image.tmdb.org/t/p/original/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+    "overview": "A chemistry teacher turns to a life of crime after a cancer diagnosis.",
+    "fullDuration": 3000,
+    "firstAirDate": "2008-01-20",
+    "numberOfSeasons": 5,
+    "numberOfEpisodes": 62,
+    "originCountry": ["US"],
+    "originalLanguage": "en",
+    "originalTitle": "Breaking Bad"
+  },
+  "worstMovie": {
+    "title": "The Room",
+    "type": "Movie",
+    "genre": ["Drama"],
+    "rating": 3.2,
+    "watchedTime": 99,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/theroom.jpg",
+    "overview": "A melodramatic love triangle unfolds with awkward results.",
+    "fullDuration": 99,
+    "firstAirDate": "2003-06-27",
+    "numberOfSeasons": 0,
+    "numberOfEpisodes": 0,
+    "originCountry": ["US"],
+    "originalLanguage": "en",
+    "originalTitle": "The Room"
+  },
+  "worstTV": {
+    "title": "Velma",
+    "type": "TV series",
+    "genre": ["Animation", "Comedy"],
+    "rating": 1.9,
+    "watchedTime": 45,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/velma.jpg",
+    "overview": "The origin story of Velma Dinkley from the Scooby-Doo franchise.",
+    "fullDuration": 120,
+    "firstAirDate": "2023-01-12",
+    "numberOfSeasons": 1,
+    "numberOfEpisodes": 10,
+    "originCountry": ["US"],
+    "originalLanguage": "en",
+    "originalTitle": "Velma"
+  },
+  "genres": [
+    { "name": "Drama", "numberOfProductions": 10, "timeSpent": 1980 },
+    { "name": "Sci-Fi", "numberOfProductions": 5, "timeSpent": 840 },
+    { "name": "Crime", "numberOfProductions": 4, "timeSpent": 1550 }
+  ],
+  "bingeSessions": [
+    {
+      "production": {
+        "title": "Breaking Bad",
+        "type": "TV series",
+        "genre": ["Crime"],
+        "rating": 9.5,
+        "watchedTime": 300
+      },
+      "startTime": "2025-04-01T17:00:00Z",
+      "endTime": "2025-04-01T22:00:00Z",
+      "totalWatchTime": 300,
+      "numberOfWatchedEpisodes": 6
+    },
+    {
+      "production": {
+        "title": "Stranger Things",
+        "type": "TV series",
+        "genre": ["Sci-Fi"],
+        "rating": 8.6,
+        "watchedTime": 240
+      },
+      "startTime": "2025-05-05T18:00:00Z",
+      "endTime": "2025-05-05T23:00:00Z",
+      "totalWatchTime": 240,
+      "numberOfWatchedEpisodes": 4
+    }
+  ],
+"trends": [
+  { "month": "January", "year": 2025, "timeSpent": 620 },
+  { "month": "February", "year": 2025, "timeSpent": 480 },
+  { "month": "March", "year": 2025, "timeSpent": 760 },
+  { "month": "April", "year": 2025, "timeSpent": 930 },
+  { "month": "May", "year": 2025, "timeSpent": 1110 }
+],
+  "watchedMovies": [
+    {
+      "title": "Inception",
+      "type": "Movie",
+      "genre": ["Sci-Fi"],
+      "rating": 9.0,
+      "watchedTime": 148
+    },
+    {
+      "title": "The Room",
+      "type": "Movie",
+      "genre": ["Drama"],
+      "rating": 3.2,
+      "watchedTime": 99
+    }
+  ],
+  "watchedTV": [
+    {
+      "title": "Breaking Bad",
+      "type": "TV series",
+      "genre": ["Crime", "Drama"],
+      "rating": 9.5,
+      "watchedTime": 2100
+    },
+    {
+      "title": "Velma",
+      "type": "TV series",
+      "genre": ["Animation", "Comedy"],
+      "rating": 1.9,
+      "watchedTime": 45
+    }
+  ]
+}

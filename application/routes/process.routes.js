@@ -83,6 +83,27 @@ router.post('/', async (req, res) => {
   if (activity.profiles[0].viewingActivity.length[0])
     return res.status(500).send('No viewing activity for this profile in this period');
 
+
+//   // Load test data instead of calling the API
+// const testReportPath = path.join(__dirname, '../../API/test_data/example_report.json');
+
+// try {
+//   const testReport = JSON.parse(fs.readFileSync(testReportPath, 'utf8'));
+//   req.session.report = testReport;
+
+//   fs.writeFile(
+//     path.join(__dirname, '../../reports', req.session.reportId),
+//     JSON.stringify(testReport),
+//     (err) => {
+//       if (err) return res.status(500).send('Server failed');
+//       return res.status(200).send('OK');
+//     }
+//   );
+// } catch (err) {
+//   console.error('Failed to load test report:', err);
+//   return res.status(500).send('Failed to load test report');
+// }
+
   // Send request to API
   axios.post('http://localhost:8080/generate', activity)
     .then(function (response) {
