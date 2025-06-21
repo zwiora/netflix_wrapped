@@ -88,7 +88,7 @@ func getProductionDetailsTMDB(prod *ProductionDetailed) error {
 		"append_to_response": "images",
 	}
 	if prod.Type == TV {
-		productionDetails, err := tmdbClient.GetTVDetails(prod.id, options) // ID BoJack Horseman
+		productionDetails, err := tmdbClient.GetTVDetails(prod.id, options)
 		if err != nil {
 			return err
 		}
@@ -102,7 +102,7 @@ func getProductionDetailsTMDB(prod *ProductionDetailed) error {
 		prod.OriginalTitle = productionDetails.OriginalName
 		prod.Overview = productionDetails.Overview
 	} else {
-		productionDetails, err := tmdbClient.GetMovieDetails(prod.id, options) // ID BoJack Horseman
+		productionDetails, err := tmdbClient.GetMovieDetails(prod.id, options)
 		if err != nil {
 			return err
 		}

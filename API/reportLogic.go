@@ -77,7 +77,7 @@ func IsWithinThreeHours(dateStr1, dateStr2 string) (bool, error) {
 	return diff <= 3*time.Hour, nil
 }
 
-func generateProdDetails(production *Production) *ProductionDetailed {
+func generateProdDetails(production *Production) (*ProductionDetailed, error) {
 	result := new(ProductionDetailed)
 
 	result.Genre = production.Genre
@@ -86,9 +86,12 @@ func generateProdDetails(production *Production) *ProductionDetailed {
 	result.WatchedTime = production.WatchedTime
 	result.Type = production.Type
 	result.id = production.id
-	getProductionDetailsTMDB(result)
+	err := getProductionDetailsTMDB(result)
+	if err != nil {
+		return nil, err
+	}
 
-	return result
+	return result, nil
 }
 
 func generateList(list map[string]*Production, genres map[int64]string) ([]Production, error) {
@@ -229,6 +232,7 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	report.Trends = months
 
 	// genres
+	log.Println("Fetching list of genres")
 	genres, err := getGenresTMDB()
 	if err != nil {
 		return err
@@ -237,14 +241,18 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	// productions
 	log.Println("Generating list of movies")
 	report.WatchedMovies, err = generateList(watchedMovies, genres)
+	if err != nil {
+		return err
+	}
+
 	log.Println("Generating list of TV series")
 	report.WatchedTV, err = generateList(watchedTV, genres)
-
 	if err != nil {
 		return err
 	}
 
 	// binge
+	log.Println("Analysing binge sessions")
 	var resultBinges []BingeSession
 	for _, list := range bingeSessions {
 		for _, session := range list {
@@ -332,10 +340,32 @@ func analyseData(activity []ViewingActivity, report *Report) error {
 	report.Genres = genresArr
 
 	// ranking
-	report.BestMovie = *generateProdDetails(&bestMovie)
-	report.BestTV = *generateProdDetails(&bestTV)
-	report.WorstMovie = *generateProdDetails(&worstMovie)
-	report.WorstTV = *generateProdDetails(&worstTV)
+	log.Println("Fetching production details")
+	tmp, err := generateProdDetails(&bestMovie)
+	if err != nil {
+		return err
+	}
+	report.BestMovie = *tmp
+
+	tmp, err = generateProdDetails(&bestTV)
+	if err != nil {
+		return err
+	}
+	report.BestTV = *tmp
+
+	tmp, err = generateProdDetails(&worstMovie)
+	if err != nil {
+		return err
+	}
+	report.WorstMovie = *tmp
+
+	tmp, err = generateProdDetails(&worstTV)
+	if err != nil {
+		return err
+	}
+	report.WorstTV = *tmp
+
+	log.Println("Report complete")
 
 	return nil
 }
@@ -346,8 +376,6 @@ func generateReport(data *Data) (*Report, error) {
 
 	profileIdx := 0
 	userData := data.Profiles[profileIdx]
-
-	// fmt.Println(userData.N)
 
 	report.UserName = userData.Name
 	err := analyseData(userData.ViewingActivity, report)

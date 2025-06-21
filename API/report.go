@@ -37,21 +37,21 @@ type ProductionDetailed struct {
 type Genre struct {
 	Name                string `json:"name"`
 	NumberOfProductions int    `json:"numberOfProductions"`
-	TimeSpent           int    `json:"timeSpent"` // in minutes
+	TimeSpent           int    `json:"timeSpent"`
 }
 
 type BingeSession struct {
 	Production              *Production `json:"production"`
 	StartTime               string      `json:"startTime"`
 	EndTime                 string      `json:"endTime"`
-	TotalWatchTime          float32     `json:"totalWatchTime"` // in minutes
+	TotalWatchTime          float32     `json:"totalWatchTime"`
 	NumberOfWatchedEpisodes int         `json:"numberOfWatchedEpisodes"`
 	episodes                []string
 }
 
 type Month struct {
 	Month     string `json:"month"`
-	TimeSpent int    `json:"timeSpent"` // in minutes
+	TimeSpent int    `json:"timeSpent"`
 }
 
 type Report struct {

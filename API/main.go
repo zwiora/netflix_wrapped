@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	tmdb "github.com/cyruzin/golang-tmdb"
 	"github.com/gin-gonic/gin"
@@ -10,21 +11,19 @@ import (
 var tmdbClient *tmdb.Client
 
 func main() {
+	// External API
 	var err error
-
 	setApiKey()
 	tmdbClient, err = initializeTMDB()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
+	// API service
 	fmt.Println("Starting application")
 	port := "8080"
 
 	router := gin.Default()
-	router.GET("/test", getAllData)
 	router.POST("/generate", postData)
 	router.Run("localhost:" + port)
-
-	fmt.Println("Server running on port " + port)
 }

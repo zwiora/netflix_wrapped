@@ -21,5 +21,4 @@ func setApiKey() {
 
 ## Testing
 
-* curl http://localhost:8080/test
-* curl http://localhost:8080/generate --include --header "Content-Type: application/json" -X "POST" -d "@test_data/test.json"
+```curl http://localhost:8080/generate --include --header "Content-Type: application/json" -X "POST" -d "@test_data/example.json"```
