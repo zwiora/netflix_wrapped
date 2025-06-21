@@ -218,11 +218,11 @@
   <!-- Step 4 -->
   <div class="step-card-two">
     <div class="step-content">
-      <h2>4. Choose timespan</h2>
-      <p>Select a date range for your wrapped summary.</p>
+      <h2>4. Choose timespan and username</h2>
+      <p>Select a date range for your wrapped summary and name of the profile you wish to see.</p>
       <input type="date" name="startDate" id="startDate" disabled />
       <input type="date" name="endDate" id="endDate" disabled />
-      <!-- <input type="text" name="username" placeholder="Username" /> -->
+      <input type="text" name="username" id='username'placeholder="Username" disabled/>
     </div>
   </div>
 
@@ -256,6 +256,7 @@
   fileInput.addEventListener('change', () => {
     document.getElementById('startDate').disabled = false;
     document.getElementById('endDate').disabled = false;
+    document.getElementById('username').disabled = false;
     document.getElementById('generateBtn').disabled = false;
 
     // Set default range: last year
@@ -299,7 +300,7 @@
 
   const startDate = document.getElementById('startDate').value;
   const endDate = document.getElementById('endDate').value;
-
+  const userName = document.getElementById('username').value;
   if (!startDate || !endDate) {
     alert('Please select both start and end dates.');
     return;
@@ -309,6 +310,7 @@
   formData.append('netflixData', tempFile);
   formData.append('startDate', startDate);
   formData.append('endDate', endDate);
+  formData.append('username', userName);
 
   try {
     const res = await fetch('/upload', {
@@ -333,7 +335,7 @@
     document.getElementById('startDate').disabled = true;
     document.getElementById('endDate').disabled = true;
     document.getElementById('generateBtn').disabled = true;
-
+    document.getElementById('username').disabled = true;
     console.error('Upload error:', err);
     alert('Upload failed. Please try again.');
 
