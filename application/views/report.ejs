@@ -129,7 +129,7 @@
   .detail-line {
     font-size: 0.75rem;
     color: #aaa;
-    margin-bottom: 0.3rem;
+    margin-bottom: 1px;
   }
 
   .detail-line strong {
@@ -358,6 +358,50 @@
   height: 1rem;
 }
 
+.wide-card {
+  width: 100%;
+  max-width: 800px;
+}
+
+.media-section {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.media-details {
+  flex: 1;
+  min-width: 250px;
+}
+
+.description {
+  margin: 0.5rem 0;
+  color: #ccc;
+}
+
+.meta-line {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.icon-row {
+  display: flex;
+  gap: 1rem;
+  margin: 0.25em 0 0.75em;
+  font-size: 0.95em;
+}
+
+.icon-text {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.inline-icon {
+  height: 1em;
+  width: 1em;
+}
+
 </style>
 
 <div class="report-wrapper">
@@ -379,52 +423,67 @@
     </div>
   </div>
 
-  <div class="cards-container">
+<div class="cards-container">
     <!-- Best Movie Watched -->
-    <div class="highlight-card">
+    <div class="highlight-card wide-card">
       <h3><img src="/assets/icons/movie.svg" alt="Movie" /> Best Movie Watched</h3>
       <div class="media-section">
         <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.bestMovie.imageUrl.replace('http://localhost:3000', '') %>" alt="Movie Poster" />
         <div class="media-details">
           <div class="title"><%= report.bestMovie.title %></div>
-          <div class="info-line">
-            <img src="/assets/icons/star.svg" alt="Rating" />
-            <%= report.bestMovie.rating.toFixed(1) %>
+
+          <!-- Icons directly under title -->
+          <div class="icon-row">
+            <span class="icon-text">
+              <img src="/assets/icons/star.svg" alt="Rating" class="inline-icon" />
+              <%= report.bestMovie.rating.toFixed(1) %>
+            </span>
+            <span class="icon-text">
+              <img src="/assets/icons/clock.svg" alt="Duration" class="inline-icon" />
+              <%= report.bestMovie.watchedTime %> min
+            </span>
           </div>
-          <p class="detail-line">
-            <strong>Genre:</strong> <%= report.bestMovie.genre.join(', ') %>
+
+          <p class="description"><%= report.bestMovie.overview %></p>
+          <p class="meta-line">
+            <%= report.bestMovie.genre.join(', ') %> ·
+            Premiere Date: <%= report.bestMovie.firstAirDate %> ·
+            Country: <%= report.bestMovie.originCountry.join(', ') %>
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Best TV Show Watched -->
-    <div class="highlight-card">
+      <!-- Best TV Show Watched -->
+    <div class="highlight-card wide-card">
       <h3><img src="/assets/icons/tv.svg" alt="TV" /> Best TV Show Watched</h3>
       <div class="media-section">
         <img class="poster" src="https://image.tmdb.org/t/p/original<%= report.bestTV.imageUrl.replace('http://localhost:3000', '') %>" alt="TV Poster" />
-
         <div class="media-details">
           <div class="title"><%= report.bestTV.title %></div>
-          <div class="info-line">
-            <img src="/assets/icons/star.svg" alt="Rating" />
-            <%= report.bestTV.rating.toFixed(1) %>
+
+          <!-- Icons directly under title -->
+          <div class="icon-row">
+            <span class="icon-text">
+              <img src="/assets/icons/star.svg" alt="Rating" class="inline-icon" />
+              <%= report.bestTV.rating.toFixed(1) %>
+            </span>
+            <span class="icon-text">
+              <img src="/assets/icons/clock.svg" alt="Duration" class="inline-icon" />
+              <%= Math.round(report.bestTV.watchedTime) %> min
+            </span>
           </div>
-          <div class="info-line">
-            <img src="/assets/icons/clock.svg" alt="Time" />
-            <%= Math.round(report.bestTV.watchedTime) %> min
-          </div>
-          <p class="detail-line">
-            <strong>Genre:</strong> <%= report.bestTV.genre.join(', ') %>
-          </p>
-          <p class="detail-line">
-            <strong>Episodes:</strong> <%= report.bestTV.numberOfEpisodes %>
+
+          <p class="description"><%= report.bestTV.overview %></p>
+          <p class="meta-line">
+            <%= report.bestTV.genre.join(', ') %> ·
+            Premiere Date: <%= report.bestTV.firstAirDate %> ·
+            Country: <%= report.bestTV.originCountry.join(', ') %> ·
+            Episodes: <%= report.bestTV.numberOfEpisodes %>
           </p>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 <!-- Genre Watch Time Pie Chart -->
 <div class="chart-wrapper">
@@ -492,7 +551,6 @@
           </div>
         <% }) %>
       </div>
-
     </div>
   </section>
 </div>
