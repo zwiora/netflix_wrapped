@@ -176,7 +176,7 @@
   <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
-      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request)</p>
+      <p>You must log into Netflix and request to download your history.</p>
       <button onclick="window.open('https://www.netflix.com/account/getmyinfo', '_blank')">
         Netflix View Activity
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
@@ -184,11 +184,21 @@
     </div>
     <div class="step-img" style="background-image: url('/Assets/step1.png');"></div>
   </div>
-
+  
   <!-- Step 2 -->
+  <div class="step-card-two">
+    <div class="step-content">
+      <h2>2. Await Netflix response</h2>
+      <p>Netflix will gather the necessary data and send it to you via email. This process might take minutes to hours, so be patient.</p>
+      
+    </div>
+    <!-- <div class="step-img" ></div> -->
+  </div>
+
+  <!-- Step 3 -->
   <div class="step-card">
     <div class="step-content">
-      <h2>2. Upload CSV</h2>
+      <h2>3. Upload CSV</h2>
       <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
@@ -205,10 +215,10 @@
   </div>
 
 <!-- a -->
-  <!-- Step 3 -->
+  <!-- Step 4 -->
   <div class="step-card-two">
     <div class="step-content">
-      <h2>3. Choose timespan</h2>
+      <h2>4. Choose timespan</h2>
       <p>Select a date range for your wrapped summary.</p>
       <input type="date" name="startDate" id="startDate" disabled />
       <input type="date" name="endDate" id="endDate" disabled />
@@ -216,10 +226,10 @@
     </div>
   </div>
 
-  <!-- Step 4 -->
+  <!-- Step 5 -->
   <div class="step-card-two">
     <div class="step-content">
-      <h2>4. Generate report</h2>
+      <h2>5. Generate report</h2>
       <p>Click the button to generate your Netflix Wrapped!</p>
       <button id="generateBtn" onclick="generateReport()" disabled>
         <img src="/Assets/icons/generate.svg" width="16" alt="Generate" /> Generate Report
