@@ -5,10 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
 
 <style>
-  #uploadForm {
-    display: contents;
-  }
-
   body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
@@ -63,29 +59,30 @@
     gap: 1.5rem;
   }
 
-    .step-card {
-    display: flex;
-    flex-direction: row;
-    background-color: #1B1C1C;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    min-height: 200px;
-    }
+  .step-card {
+  display: flex;
+  flex-direction: row;
+  background-color: #1B1C1C;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  min-height: 200px;
+  }
 
-    .step-card-two {
-    display: flex;
-    flex-direction: row;
-    background-color: #1B1C1C;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    min-height: 120px;
-    }
+  .step-card-two {
+  display: flex;
+  flex-direction: row;
+  background-color: #1B1C1C;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  min-height: 120px;
+  }
 
   .step-content {
     flex: 1;
     margin-right: 1rem;
+    word-wrap: break-word;
   }
 
   .step-content input[disabled],
@@ -98,7 +95,7 @@
   .step-content h2 {
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     word-wrap: break-word;
   }
 
@@ -127,26 +124,14 @@
     font-family: 'Open Sans', sans-serif;
   }
 
-  .step-content input[type="text"] {
-    background-color: #4F4F4F;
-    color: #fff;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 5px;
-    font-size: 0.85rem;
-    font-family: 'Open Sans', sans-serif;
-    width: 100%;
-    max-width: 300px;
-  }
-
   .step-img {
-    width: 50%;
-    height: auto;
-    min-height: 200px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-  }
+  width: 50%;
+  height: auto;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+}
 
     .upload-row {
     display: flex;
@@ -176,6 +161,7 @@
     font-size: 0.75rem;
     color: #666;
   }
+
 </style>
 
 <div class="header-banner">
@@ -190,7 +176,7 @@
   <div class="step-card">
     <div class="step-content">
       <h2>1. Download data from Netflix</h2>
-      <p>You must log into Netflix and request to download your history. You should recieve a zip file via email. (You might have to wait for Netflix to process your request).</p>
+      <p>You must log into Netflix and request to download your history.</p>
       <button onclick="window.open('https://www.netflix.com/account/getmyinfo', '_blank')">
         Netflix View Activity
         <img src="/Assets/icons/linkTo.svg" width="16" alt="Download" />
@@ -198,63 +184,62 @@
     </div>
     <div class="step-img" style="background-image: url('/Assets/step1.png');"></div>
   </div>
-
-<form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+  
   <!-- Step 2 -->
+  <div class="step-card-two">
+    <div class="step-content">
+      <h2>2. Await Netflix response</h2>
+      <p>Netflix will gather the necessary data and send it to you via email. This process might take minutes to hours, so be patient.</p>
+      
+    </div>
+    <!-- <div class="step-img" ></div> -->
+  </div>
+
+  <!-- Step 3 -->
   <div class="step-card">
     <div class="step-content">
-      <h2>2. Upload CSV</h2>
+      <h2>3. Upload CSV</h2>
       <p> Unpack the zip file you receieved. Choose the file <br>CONTENT_INTERACTION/ViewingActivity.csv</p>
       <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
-      <div class="upload-row">
-        <button type="button" id="uploadBtn">
-          <img src="/assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
-        </button>
-        <span id="fileDisplay" class="file-display" style="display: none;"></span>
-      </div>
+        <input type="file" id="fileInput" name="netflixData" style="display: none;" required />
+        <div class="upload-row">
+          <button type="button" id="uploadBtn">
+            <img src="/assets/icons/upload.svg" width="16" alt="Upload" /> Upload CSV
+          </button>
+          <span id="fileDisplay" class="file-display" style="display: none;"></span>
+          </span>
+        </div>
+      </form>
     </div>
     <div class="step-img" style="background-image: url('/Assets/step2.png');"></div>
   </div>
 
-  <!-- Step 3 -->
-  <div class="step-card-two">
-    <div class="step-content">
-      <h2>3. Choose timespan</h2>
-      <p>Select a date range for your wrapped summary.
-      </p>
-      <input type="date" name="startDate" id="startDate" required disabled />
-      <input type="date" name="endDate" id="endDate" required disabled />
-    </div>
-  </div>
-
+<!-- a -->
   <!-- Step 4 -->
   <div class="step-card-two">
     <div class="step-content">
-      <h2>4. Input profile name</h2>
-      <p>Enter the profile name that you want to generate the report for.</p>
-      <input type="text" name="username" id="username" placeholder="John" required disabled />
+      <h2>4. Choose timespan and username</h2>
+      <p>Select a date range for your wrapped summary and name of the profile you wish to see.</p>
+      <input type="date" name="startDate" id="startDate" disabled />
+      <input type="date" name="endDate" id="endDate" disabled />
+      <!-- <input type="text" name="username" id='username' placeholder="Username" disabled/> -->
+       <select id="usernameDropdown" name="username" disabled>
+       <option value="">Select Profile</option>
+       </select>
     </div>
   </div>
-</form>
 
   <!-- Step 5 -->
   <div class="step-card-two">
     <div class="step-content">
       <h2>5. Generate report</h2>
-      <p>Click the button below to generate your Netflix Wrapped!</p>
+      <p>Click the button to generate your Netflix Wrapped!</p>
       <button id="generateBtn" onclick="generateReport()" disabled>
         <img src="/Assets/icons/generate.svg" width="16" alt="Generate" /> Generate Report
       </button>
     </div>
   </div>
 
-  <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="netflixData" id="netflixData" required>
-    <input type="date" name="startDate" id="startDate" required><input type="date" name="endDate" id="endDate" required>
-    <input type="text" name="username" required>
-    <input type="submit" value="Submit">
-  </form> -->
 
 <footer>
   Made by WUST students for SSD project. Not affiliated with Netflix.
@@ -274,7 +259,7 @@
   fileInput.addEventListener('change', () => {
     document.getElementById('startDate').disabled = false;
     document.getElementById('endDate').disabled = false;
-    document.getElementById('username').disabled = false;
+    document.getElementById('usernameDropdown').disabled = false;
     document.getElementById('generateBtn').disabled = false;
 
     // Set default range: last year
@@ -301,7 +286,50 @@
     return;
     }
     
-    tempFile = file;
+    tempFile = file; 
+    // --------------------
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const text = e.target.result;
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) {
+        alert('CSV appears to be empty.');
+        return;
+      }
+
+      // Try both delimiters
+      let delimiter = ',';
+      if (lines[0].includes('\t')) delimiter = '\t';
+
+      const headers = lines[0].split(delimiter).map(h => h.trim());
+      const profileIndex = headers.findIndex(h => h.toLowerCase() === 'profile name');
+
+      if (profileIndex === -1) {
+        alert('CSV missing "Profile Name" column.');
+        return;
+      }
+
+      const names = new Set();
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(delimiter).map(c => c.trim());
+        const name = cols[profileIndex];
+        if (name) names.add(name);
+      }
+
+      const dropdown = document.getElementById('usernameDropdown');
+      dropdown.innerHTML = '<option value="">Select Profile</option>';
+
+      names.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        dropdown.appendChild(option);
+      });
+
+      dropdown.disabled = false;
+    };
+    reader.readAsText(file);
 
     fileDisplay.innerHTML = `
       <img src="/assets/icons/generate.svg" width="16" alt="CSV Icon" />
@@ -310,19 +338,59 @@
     fileDisplay.style.display = 'flex';
   });
 
-async function generateReport() {
+  async function generateReport() {
   if (!tempFile) {
     alert('Please upload a CSV file first.');
     return;
   }
 
-  // Set the file input manually with the tempFile
-  const dataTransfer = new DataTransfer();
-  dataTransfer.items.add(tempFile);
-  fileInput.files = dataTransfer.files;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const username = document.getElementById('usernameDropdown').value;
+  if (!startDate || !endDate) {
+    alert('Please select both start and end dates.');
+    return;
+  }
 
-  // Submit the form programmatically
-  document.getElementById('uploadForm').submit();
+  const formData = new FormData();
+  formData.append('netflixData', tempFile);
+  formData.append('startDate', startDate);
+  formData.append('endDate', endDate);
+  formData.append('username', username);
+
+  try {
+    const res = await fetch('/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Upload failed.');
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      window.location.href = '/waiting';
+    } else {
+      throw new Error(data.error || 'Upload failed.');
+    }
+
+  } catch (err) {
+    document.getElementById('startDate').disabled = true;
+    document.getElementById('endDate').disabled = true;
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('usernameDropdown').disabled = true;
+    console.error('Upload error:', err);
+    alert('Upload failed. Please try again.');
+
+    await fetch('/cleanup', { method: 'POST' });
+
+    tempFile = null;
+    fileInput.value = '';
+    fileDisplay.style.display = 'none';
+  }
 }
 
 </script>
