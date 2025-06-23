@@ -227,12 +227,14 @@
   <!-- Step 4 -->
   <div class="step-card-two">
     <div class="step-content">
-      <h2>4. Input profile name</h2>
-      <p>Enter the profile name that you want to generate the report for.</p>
-      <input type="text" name="username" id="username" placeholder="John" required disabled />
+      <h2>4. Choose profile</h2>
+      <p>Select the profile to generate the report for.</p>
+      <select name="username" id="username" required disabled>
+        <option value="" disabled selected>Select profile</option>
+      </select>
     </div>
   </div>
-</form>
+
 
   <!-- Step 5 -->
   <div class="step-card-two">
@@ -304,6 +306,33 @@
       <span>${file.name}</span>
     `;
     fileDisplay.style.display = 'flex';
+
+      const reader = new FileReader();
+  reader.onload = function (event) {
+    const lines = event.target.result.split('\n');
+    const headers = lines[0].split(',');
+
+    const profileIndex = headers.findIndex(h => h.trim().toLowerCase() === 'profile name');
+    const profiles = new Set();
+
+    for (let i = 1; i < lines.length; i++) {
+      const row = lines[i].split(',');
+      if (row.length <= profileIndex) continue;
+      const name = row[profileIndex].trim();
+      if (name) profiles.add(name);
+    }
+
+    const dropdown = document.getElementById('username');
+    dropdown.innerHTML = '<option value="" disabled selected>Select profile</option>';
+    [...profiles].forEach(profile => {
+      const opt = document.createElement('option');
+      opt.value = profile;
+      opt.textContent = profile;
+      dropdown.appendChild(opt);
+    });
+  };
+
+  reader.readAsText(fileInput.files[0]);
   });
 
 async function generateReport() {
